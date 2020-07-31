@@ -14,10 +14,10 @@ class CreateUserNotificationsTable extends Migration
     public function up()
     {
         Schema::create('user_notifications', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->enum('type_of_notification', array('New friend request', 'Edit meme request', 'New meme from favourite category'));
             $table->string('data');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->boolean('read');
             $table->timestamp('read_at')->nullable();

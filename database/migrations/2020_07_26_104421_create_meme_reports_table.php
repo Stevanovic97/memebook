@@ -14,12 +14,12 @@ class CreateMemeReportsTable extends Migration
     public function up()
     {
         Schema::create('meme_reports', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->enum('reason', array('Violations of privacy', 'Spam', 'Personal disputes', 'Discrimination'));
             $table->string('explanation');
-            $table->unsignedBigInteger('meme_id');
+            $table->unsignedInteger('meme_id');
             $table->foreign('meme_id')->references('id')->on('memes')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

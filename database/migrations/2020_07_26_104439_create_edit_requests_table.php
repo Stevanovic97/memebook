@@ -14,12 +14,12 @@ class CreateEditRequestsTable extends Migration
     public function up()
     {
         Schema::create('edit_requests', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('request_by_user_id');
+            $table->increments('id');
+            $table->unsignedInteger('request_by_user_id');
             $table->foreign('request_by_user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('request_to_user_id');
+            $table->unsignedInteger('request_to_user_id');
             $table->foreign('request_to_user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('meme_id');
+            $table->unsignedInteger('meme_id');
             $table->foreign('meme_id')->references('id')->on('memes')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
