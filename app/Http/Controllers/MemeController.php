@@ -9,6 +9,13 @@ use Image;
 
 class MemeController extends Controller
 {
+    private $commentRepository;
+
+    public function __construct(CommentIRepository $repository)
+    {
+        $this->commentRepository = $repository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,6 +23,7 @@ class MemeController extends Controller
      */
     public function index()
     {
+        $comments = $this->commentRepository->getComments($meme_id);
         $memes = Meme::all();
         if (!isset($memes))
             abort(404);

@@ -13,17 +13,14 @@
 
 
 Auth::routes();
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/home', 'HomeController@index')->name('home');
+
 Route::get('/', 'MemeController@index')->name('memes.index');
-Route::get('/memes/create', 'MemeController@create')->name('memes.create');
-Route::post('/memes', 'MemeController@store')->name('memes.store');
-Route::get('/memes/{id}', 'MemeController@destroy')->name('memes.destroy');
+// Route::get('/meme/{id}', 'MemeController@show')->name('meme.show');
+Route::group(['middleware' => 'auth' ], function() {
+    Route::get('/meme/create', 'MemeController@create')->name('meme.create');
+    Route::post('/memes', 'MemeController@store')->name('meme.store');
+    Route::get('/meme/delete/{id}', 'MemeController@destroy')->name('meme.delete');
+});
 
 //Route::delete('/memes/{id}', 'MemeController@destroy')->name('memes.destroy');
 
