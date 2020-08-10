@@ -1,14 +1,13 @@
 <?php
 namespace App\Repository\IRepositories;
 
-use App\Meme;
-use App\EditRequest;
+use App\Http\Requests\EditRequestReq;
 
 interface EditRequestIRepository
 {
-    public function getEditRequestsForUser($user_id);
-    public function getEditRequestsForMeme($meme_id);
-    public function getEditRequest($editRequest_id);
-    public function deleteEditRequest($editRequest_id);
-    public function addEditRequest(EditRequestReq $request);
+    function getEditRequestsForUser($user_id);
+    function getEditRequestsForMeme($meme_id);
+    function getEditRequest($editRequest_id);
+    function deleteEditRequest($editRequest_id);
+    function addEditRequest(EditRequestReq $request);
 }

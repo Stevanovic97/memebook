@@ -1,8 +1,9 @@
 <?php
 namespace App\Repository\Repositories;
 
+use App\Repository\IRepositories\CommentIRepository;
+use App\Http\Requests\CommentRequest;
 use App\Comment;
-use App\Meme;
 
 class CommentRepository implements CommentIRepository
 {

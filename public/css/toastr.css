@@ -1,0 +1,13 @@
+#toast-container
+{
+    position:absolute;
+    top:100px;
+    width:250px;
+    right:60px;
+    height:auto;
+}
+
+.toast
+{
+    display: block;
+}

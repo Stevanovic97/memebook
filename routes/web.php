@@ -22,7 +22,4 @@ Route::group(['middleware' => 'auth' ], function() {
     Route::get('/meme/delete/{id}', 'MemeController@destroy')->name('meme.delete');
 });
 
-//Route::delete('/memes/{id}', 'MemeController@destroy')->name('memes.destroy');
-
-//Route::resource('memes', 'MemeController', ['except' => ['show']]);
 

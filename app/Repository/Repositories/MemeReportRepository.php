@@ -1,11 +1,14 @@
 <?php
 namespace App\Repository\Repositories;
 
-class EditRequestRepository implements EditRequestIRepository
+use App\MemeReport;
+use App\Repository\IRepositories\MemeReportIRepository;
+
+class MemeReportRepository implements MemeReportIRepository
 {
     protected $model;
 
-    public function __construct(EditRequest $model)
+    public function __construct(MemeReport $model)
     {
         $this->model = $model;
     }

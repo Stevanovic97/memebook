@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Request\UserNotificationRequest;
 
 class UserNotificationController extends Controller
 {

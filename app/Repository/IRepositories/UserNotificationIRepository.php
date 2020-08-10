@@ -1,14 +1,13 @@
 <?php
 namespace App\Repository\IRepositories;
 
-use App\UserNotification;
-use App\Meme;
+use App\Http\Requests\UserNotificationRequest;
 
-interface CommentIRepository
+interface UserNotificationIRepository
 {
-    public function getUserNotifications($user_id);
-    public function getUserNotification($notification_id);
-    public function readUserNotifications($user_id);
-    public function deleteUserNotifications($user_id);
-    public function addUserNotification(UserNotificationRequest $request);
+    function getUserNotifications($user_id);
+    function getUserNotification($notification_id);
+    function readUserNotifications($user_id);
+    function addUserNotification(UserNotificationRequest $request);
+    function deleteUserNotifications($user_id);
 }

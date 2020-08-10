@@ -1,7 +1,7 @@
 <?php
 namespace App\Repository\Repositories;
 
-use App\Meme;
+use App\Repository\IRepositories\EditRequestIRepository;
 use App\EditRequest;
 
 class EditRequestRepository implements EditRequestIRepository
@@ -20,7 +20,7 @@ class EditRequestRepository implements EditRequestIRepository
 
     public function getEditRequestsForMeme($meme_id)
     {
-        return $this->model->getAllEditRequestsForUser($meme_id);
+        return $this->model->getAllEditRequestsForMeme($meme_id);
     }   
 
     public function getEditRequest($editRequest_id)

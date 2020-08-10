@@ -7,8 +7,9 @@
 
         <!-- SIDEBAR library imports -->
         <!-- CSS -->
-        <link rel="stylesheet" type="text/css" href={{ URL::asset('css/sidebar.css') }}>
-        <link rel="stylesheet" type="text/css" href={{asset('css/media-queries.css')}}>
+        <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/sidebar.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/media-queries.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/toastr.css') }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500&display=swap">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
@@ -16,6 +17,10 @@
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="assets/css/style.css">
         <link rel="stylesheet" href="assets/css/media-queries.css">
+
+        <!--Toast css -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.css">
 
         <!-- Favicon and touch icons -->
         <link rel="shortcut icon" href="assets/ico/favicon.png">
@@ -77,6 +82,8 @@
             </div>
         </nav>
 
+
+
         <!-- Wrapper -->
         <div class="wrapper" style="background-color:gray">
             <!-- Sidebar -->
@@ -103,13 +110,11 @@
                         </a>
                         <ul class="collapse list-unstyled" id="otherSections">
                         @if (!empty($categories))
-                        {
                             @foreach($categories as $category)
                                 <li>
                                     <a class="scroll-link" href="#section-3">{{$category->name}}</a>
                                 </li>
                             @endforeach
-                        }
                         @endif
                         </ul>
                     </li>
@@ -140,16 +145,43 @@
         <!-- End content -->
 
         <!-- Javascript -->
-        <script src="assets/js/jquery-3.3.1.min.js"></script>
-        <script src="assets/js/jquery-migrate-3.0.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="assets/js/jquery.backstretch.min.js"></script>
         <script src="assets/js/wow.min.js"></script>
         <script src="assets/js/jquery.waypoints.min.js"></script>
         <script src="assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
         <script src="assets/js/scripts.js"></script>
         <script type="text/javascript" src="{{ URL::asset('js/sidebar.js') }}"></script>
+
+        <!-- Toastr js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.js.map"></script>
+
+        @if (session('flashMessage'))
+            <script>
+                toastr.options.onShown = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": true, 
+                    "progressBar": false, 
+                    "positionClass": "toast-container",
+                    "preventDuplicates": false, 
+                    "onclick": null,
+                    "showDuration": "300", 
+                    "hideDuration": "1000", 
+                    "timeOut": "5000", 
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut",
+                    "autohide": false,
+                };
+                toastr.success("{{ session('flashMessage') }}", 'Success');
+            </script>
+        @endif
     </body>
 </html>

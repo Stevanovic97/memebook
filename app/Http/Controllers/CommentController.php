@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Request\CommentRequest;
 use App\Repository\IRepositories\CommentIRepository;
 use App\Comment;
 
@@ -79,7 +79,7 @@ class CommentController extends Controller
         }
         catch (Exception $exception)
         {
-            echo 'Error while trying to add meme: ', $e->getMessage(), "\n";
+            echo 'Error while trying to add meme comment: ', $e->getMessage(), "\n";
         }
     }
 

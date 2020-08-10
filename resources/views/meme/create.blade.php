@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <title>Login</title>
+    <title>Upload meme</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -30,11 +30,16 @@
                     <input type="text" name="body" class="form-control" id="textInput" placeholder="Body">
                 </div>
                 <div>
-                    <h5><b>Choose the category of your meme:</b></h5>
-                    <select name="category_id" id="selectCategoryId">
-                        <option value="">Horor</option>
-                        <option value="">Sport</option>
-                    </select>
+                    @if (!empty($categories))
+                        <h5><b>Choose the category of your meme:</b></h5>
+                        <select name="category_id" id="selectCategoryId">
+                            @foreach ($categories as $category)
+                            {
+                                <option value="$category->id">{{ $category->name }}</option>
+                            }
+                            @endforeach
+                        </select>
+                    @endif
                 </div>
                 <br>
                 <button type="submit" id="btn-meme" class="btn btn-primary">Make Meme</button>

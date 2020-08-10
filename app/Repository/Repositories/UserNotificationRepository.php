@@ -1,6 +1,9 @@
 <?php
 namespace App\Repository\Repositories;
 
+use App\UserNotification;
+use App\Repository\IRepositories\UserNotificationIRepository;
+
 class UserNotificationRepository implements UserNotificationIRepository
 {
     protected $model;

@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="col-sm-8">
+
+<div class="col-sm-8" style="margin: 0 auto;">
     <hr>
     @foreach($memes as $meme)
         <article>
@@ -31,7 +32,7 @@
                     {{ $meme->up_vote }}
                 </a>
                 <a>
-                    {{ $meme->comments->count }}
+                    Comments count
                 </a>
             </p>
             <div style="position: relative; width: 500px;">
