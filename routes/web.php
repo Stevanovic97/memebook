@@ -11,6 +11,15 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Auth::routes();
+
+Route::get('/', 'MemeController@index')->name('memes.index');
+// Route::get('/meme/{id}', 'MemeController@show')->name('meme.show');
+Route::group(['middleware' => 'auth' ], function() {
+    Route::get('/meme/create', 'MemeController@create')->name('meme.create');
+    Route::post('/memes', 'MemeController@store')->name('meme.store');
+    Route::get('/meme/delete/{id}', 'MemeController@destroy')->name('meme.delete');
 });
+
+
