@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use http\Env\Request;
+use Session;
 use App\Http\Requests\MemeRequest;
 use App\Repository\IRepositories\MemeIRepository;
 use App\Repository\IRepositories\CategoryIRepository;
 use App\Repository\IRepositories\CommentIRepository;
+use Illuminate\Support\Facades\Auth;
+
 
 use App\Meme;
 use Image;
@@ -18,7 +22,7 @@ class MemeController extends Controller
     private $commentRepository;
 
     public function __construct(MemeIRepository $memeRepository,
-                                CategoryIRepository $categoryRepository, 
+                                CategoryIRepository $categoryRepository,
                                 CommentIRepository $commentRepository)
     {
         $this->memeRepository = $memeRepository;
@@ -33,62 +37,42 @@ class MemeController extends Controller
      */
     public function index()
     {
-        try
-        {
-            // $comments = $this->commentRepository->getComments($meme_id);
-            $memes = $this->memeRepository->getAllMemes();
-            $categories = $this->categoryRepository->getCategories();
+        // $comments = $this->commentRepository->getComments($meme_id);
+        $memes = $this->memeRepository->getAllMemes();
+        $categories = $this->categoryRepository->getCategories();
 
-            return view('meme.show')->with(compact('memes', 'categories'));
-        }
-        catch (Exception $exception)
-        {
-            echo 'Error while trying to get memes: ', $exception->getMessage(), "\n";
-        }
+        return view('meme.show')->with(compact('memes', 'categories'));
+
     }
 
-    /**
-     * Display a listing of the resource for the user.
-     *
-     * @param int $user_id
-     * @return \Illuminate\Http\Response
-     */
-    public function indexForUser($user_id)
+    public function categoryIndex($category_id)
     {
-        try
-        {
-            $memes = $this->memeRepository->getAllMemesForUser($user_id);
-            if (!isset($memes))
-                abort(404);
+        $memes = $this->memeRepository->getAllMemesForCategory($category_id);
+        $categories = $this->categoryRepository->getCategories();
+        if (!isset($memes))
+            abort(404);
 
-            return view('meme.show')->with(compact('memes'));
-        }
-        catch (Exception $exception)
-        {
-            echo 'Error while trying to get memes for user: ', $exception->getMessage(), "\n";
-        }
+        return view('meme.show')->with(compact('memes', 'categories'));
     }
 
-    /**
-     * Display a listing of the resource for the user.
-     *
-     * @param int $meme_id
-     * @return \Illuminate\Http\Response
-     */
+    public function userIndex($user_id)
+    {
+        $memes = $this->memeRepository->getAllMemesForUser($user_id);
+        $categories = $this->categoryRepository->getCategories();
+        if (!isset($memes))
+            abort(404);
+
+        return view('meme.show')->with(compact('memes', 'categories'));
+    }
+
     public function getMeme($meme_id)
     {
-        try
-        {
-            $meme = $this->memeRepository->getMeme($meme_id);
-            if (!isset($meme))
-                abort(404);
+        $meme = $this->memeRepository->getMeme($meme_id);
+        if (!isset($meme))
+            abort(404);
 
-            return view('meme.show')->with(compact('meme'));
-        }
-        catch (Exception $exception)
-        {
-            echo 'Error while trying to get meme: ', $exception->getMessage(), "\n";
-        }
+        return view('meme.show')->with(compact('meme'));
+
     }
 
     /**
@@ -110,25 +94,19 @@ class MemeController extends Controller
      */
     public function store(MemeRequest $request)
     {
-        try
-        {
-            $validated = $request->validated();
+        $validated = $request->validated();
 
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
-                $img = Image::make($file);
-                $img_name = "/" . time() . "_" . $file->getClientOriginalExtension();
-                $path = public_path('images/memes');
-                $img->save($path . $img_name);
-            }
-            $message = $this->memeRepository->addMeme($request, $img_name);
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $img = Image::make($file);
+            $img_name = "/" . time() . "_" . $file->getClientOriginalExtension();
+            $path = public_path('images/memes');
+            $img->save($path . $img_name);
+        }
+        $message = $this->memeRepository->addMeme($request, $img_name);
 
-            return redirect(route('memes.index'))->with($message);
-        }
-        catch (Exception $exception)
-        {
-            echo 'Error while trying to add meme: ', $e->getMessage(), "\n";
-        }
+        return redirect(route('memes.index'))->with($message);
+
     }
 
     /**
@@ -139,18 +117,12 @@ class MemeController extends Controller
      */
     public function edit($meme_id)
     {
-        try
-        {
-            $meme = $this->memeRepository->getMeme($meme_id);
-            if (!isset($meme))
-                abort(404);
+        $meme = $this->memeRepository->getMeme($meme_id);
+        if (!isset($meme))
+            abort(404);
 
-            return view('meme.edit')->with(compact('meme'));
-        }
-        catch (Exception $exception)
-        {
-            echo 'Error while trying to get meme: ', $exception->getMessage(), "\n";
-        }
+        return view('meme.edit')->with(compact('meme'));
+
     }
 
     /**
@@ -162,17 +134,10 @@ class MemeController extends Controller
      */
     public function update(MemeRequest $request, $meme_id)
     {
-        try
-        {
-            $validated = $request->validated();
-            $message = $this->memeRepository->updateMeme($request, $meme_id);
+        $validated = $request->validated();
+        $message = $this->memeRepository->updateMeme($request, $meme_id);
 
-            return redirect(route('memes.index'))->with($message);
-        }
-        catch (Exception $exception)
-        {
-            echo 'Error while trying to update meme: ', $e->getMessage(), "\n";
-        }
+        return redirect(route('memes.index'))->with($message);
     }
 
     /**
@@ -183,15 +148,8 @@ class MemeController extends Controller
      */
     public function destroy($meme_id)
     {
-        try
-        {
-            $message = $this->memeRepository->deleteMeme($meme_id);
+        $message = $this->memeRepository->deleteMeme($meme_id);
 
-            return redirect(route('memes.index'))->with($message);
-        }
-        catch (Exception $exception)
-        {
-            echo 'Error while trying to delete meme: ', $exception->getMessage(), "\n";
-        }
+        return redirect(route('memes.index'))->with($message);
     }
 }

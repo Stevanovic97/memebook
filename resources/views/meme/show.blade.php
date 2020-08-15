@@ -8,7 +8,7 @@
             <article>
                 <header>
                     <div style="height: 20px; color: #999; font-size: 25px; margin-bottom: 15px;">
-                        <a href="{{ route('user.single', [ 'id' => $meme->user->id ]) }}">
+                        <a href="{{ route('user.show', [ 'id' => $meme->user->id ]) }}">
                             {{ $meme->user->name }}
                         </a>
                     </div>
@@ -54,6 +54,12 @@
                     </div>
                 </div>
             </div>
+            @auth
+                @if(Auth::user()->id == $meme->user_id)
+                        <a style="background-color: blue;" href="">Edit Meme</a>
+                        <a style="background-color: red;" href="{{url(route('meme.delete',$meme->id))}}">Delete Meme</a>
+                @endif
+            @endauth
             <br>
         @endforeach
         @include('pagination.default_pagination', ['paginator' => $memes])

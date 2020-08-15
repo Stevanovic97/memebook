@@ -14,14 +14,14 @@ class Meme extends Model
 {
     protected $fillable = ['title', 'body', 'category_id', 'user_id', 'image'];
 
-    public function category()
-    {
-        return $this->belongsTo('App\Category');
-    }
-
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo('App\Category');
     }
 
     public function comments()
@@ -34,9 +34,14 @@ class Meme extends Model
         return Meme::orderBy('created_at', 'desc')->paginate(5);
     }
 
+    public function getAllMemesForCategory($category_id)
+    {
+        return Meme::where('category_id', $category_id)->orderBy('created_at', 'desc')->paginate(5);
+    }
+
     public function getAllMemesForUser($user_id)
     {
-        return Meme::where('user_id', $user_id)->get();
+        return Meme::where('user_id', $user_id)->orderBy('created_at', 'desc')->paginate(5);
     }
 
     public function getMeme($meme_id)

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repository\Repositories;
 
 use App\Meme;
@@ -15,8 +16,13 @@ class MemeRepository implements MemeIRepository
     }
 
     public function getAllMemes()
-    {   
+    {
         return $this->model->getAllMemes();
+    }
+
+    public function getAllMemesForCategory($category_id)
+    {
+        return $this->model->getAllMemesForCategory($category_id);
     }
 
     public function getAllMemesForUser($user_id)

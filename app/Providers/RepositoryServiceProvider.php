@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repository\IRepositories\UserIRepository;
+use App\Repository\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repository\IRepositories\MemeIRepository;
 use App\Repository\IRepositories\CategoryIRepository;
@@ -41,5 +43,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(EditRequestIRepository::class, EditRequestRepository::class);
         $this->app->bind(MemeReportIRepository::class, MemeReportRepository::class);
         $this->app->bind(UserNotificationIRepository::class, UserNotificationRepository::class);
+        $this->app->bind(UserIRepository::class, UserRepository::class);
     }
 }

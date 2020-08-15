@@ -28,7 +28,12 @@ class User extends Authenticatable
 	public function removeFriend(User $user)
 	{
 		$this->friends()->detach($user->id);
-	}
+    }
+    
+    public function getUser($user_id)
+    {
+        return User::where('id', '=', $user_id)->first();
+    }
 
     /**
      * The attributes that are mass assignable.

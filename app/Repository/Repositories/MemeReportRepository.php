@@ -16,12 +16,12 @@ class MemeReportRepository implements MemeReportIRepository
     public function getMemeReportsForUser($user_id)
     {
         return $this->model->getAllMemeReportsForUser($user_id);
-    }   
+    }
 
     public function getMemeReports($meme_id)
     {
         return $this->model->getAllMemeReports($meme_id);
-    }   
+    }
 
     public function addMemeReport(MemeReportRequest $request)
     {
