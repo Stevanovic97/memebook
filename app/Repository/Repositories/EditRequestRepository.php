@@ -30,11 +30,11 @@ class EditRequestRepository implements EditRequestIRepository
 
     public function deleteEditRequest($editRequest_id)
     {
-        $this->model->deleteEditRequest($editRequest_id);
+        return $this->model->deleteEditRequest($editRequest_id);
     }
 
     public function addEditRequest(EditRequestReq $request)
     {
-        $this->model->addEditRequest($request);
+        return $this->model->addEditRequest($request);
     }
 }

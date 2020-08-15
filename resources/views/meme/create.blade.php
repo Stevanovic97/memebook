@@ -14,28 +14,34 @@
 </head>
 <body>
 <div class="container" style="padding-top: 100px;">
-    <form method="post" id="meme-store" action="{{route('meme.store')}}" enctype="multipart/form-data">
+    <form method="POST" id="meme-store" action="{{ route('meme.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label for="imageInput">Image</label>
             <input type="file" name="image" class="form-control" id="imageInput">
             {{--<small id="emailHelp" class="form-text text-muted">Proslediti sliku(meme) koji zelite ubaciti</small>--}}
         </div>
-        <div class="form-group">
-            <label for="titleInput">Title</label>
-            <input type="text" name="title" class="form-control" id="titleInput" placeholder="Title">
-        </div>
-        <div class="form-group">
-            <label for="textInput">Body:</label>
-            <input type="text" name="body" class="form-control" id="textInput" placeholder="Body">
-        </div>
+            <div class="form-group">
+                <label for="titleInput">Title</label>
+                <input type="text" name="title" class="form-control" id="titleInput" placeholder="Title">
+                @if ($errors->has('title'))
+                        <div class="alert alert-danger">{{ $errors->first('title') }}</div>
+                @endif
+            </div>
+            <div class="form-group">
+                <label for="textInput">Body:</label>
+                <input type="text" name="body" class="form-control" id="textInput" placeholder="Body">
+                @if ($errors->has('body'))
+                        <div class="alert alert-danger">{{ $errors->first('body') }}</div>
+                @endif
+            </div>
         <div>
             @if (!empty($categories))
                 <h5><b>Choose the category of your meme:</b></h5>
                 <select name="category_id" id="selectCategoryId">
                     @foreach ($categories as $category)
                         {
-                        <option value="{{$category->id}}">{{ $category->name }}</option>
+                            <option value="{{$category->id}}">{{ $category->name }}</option>
                         }
                     @endforeach
                 </select>
@@ -44,6 +50,7 @@
         <br>
         <button type="submit" id="btn-meme" class="btn btn-primary">Make Meme</button>
     </form>
+    <hr>
 </div>
-<body>
+</body>
 </html>

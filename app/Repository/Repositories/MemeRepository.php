@@ -31,7 +31,7 @@ class MemeRepository implements MemeIRepository
 
     public function deleteMeme($meme_id)
     {
-        $this->model->deleteMeme($meme_id);
+        return $this->model->deleteMeme($meme_id);
     }
 
     public function addMeme(MemeRequest $request, $img_name)
@@ -41,6 +41,6 @@ class MemeRepository implements MemeIRepository
 
     public function updateMeme(MemeRequest $request, $meme_id)
     {
-        $this->model->updateMeme($request, $meme_id);
+        return $this->model->updateMeme($request, $meme_id);
     }
 }

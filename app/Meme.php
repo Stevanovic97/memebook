@@ -2,8 +2,11 @@
 
 namespace App;
 
-use App\Category;
 use Auth;
+use App\Category;
+use App\User;
+use App\Comment;
+use App\MessageHelper;
 use App\Http\Requests\MemeRequest;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,9 +19,19 @@ class Meme extends Model
         return $this->belongsTo('App\Category');
     }
 
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
+    }
+
     public function getAllMemes()
     {
-        return Meme::all();
+        return Meme::orderBy('created_at', 'desc')->paginate(5);
     }
 
     public function getAllMemesForUser($user_id)
@@ -33,7 +46,13 @@ class Meme extends Model
 
     public function deleteMeme($meme_id)
     {
-        Meme::where('id', $meme_id)->delete();
+        $deleted = Meme::where('id', $meme_id)->delete();
+        if ($deleted) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
     }
 
     public function addMeme(MemeRequest $request, $img_name)
@@ -46,17 +65,10 @@ class Meme extends Model
             'category_id' => $request->category_id
         ]);
         if ($created) {
-            $message = [
-                'flashType' => 'success',
-                'flashMessage' => 'Meme successfully uploaded!'
-            ];
-            return $message;
-        } else {
-            $message = [
-                'flashType' => 'danger',
-                'flashMessage' => 'Upload failed! Please try again.'
-            ];
-            return $message;
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
         }
     }
 
@@ -65,6 +77,23 @@ class Meme extends Model
         $meme = Meme::find($meme_id);
         $meme->title = $request->title;
         $meme->body = $request->body;
-        $meme->save();
+
+        $updated = $meme->save();
+        if ($updated) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
+    }
+
+    public function upvoteMeme($meme_id, $user_id)
+    {
+
+    }
+
+    public function downvoteMeme($meme_id, $user_id)
+    {
+
     }
 }

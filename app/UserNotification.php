@@ -45,18 +45,22 @@ class UserNotification extends Model
 
     public function addUserNotification(UserNotificationRequest $request)
     {
-        UserNotification::create([
+        $created = UserNotification::create([
             'type_of_notification' => $request->typeOfNotification,
             'data' => $request->data,
             'user_id' => $request->userId,
             'read' => false
         ]);
-        return true;
     }
 
     public function deleteAllUserNotifications($user_id)
     {
-        UserNotification::where('user_id', $user_id)->delete();
-        return true;
+        $deleted = UserNotification::where('user_id', $user_id)->delete();
+        if ($deleted) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
     }
 }

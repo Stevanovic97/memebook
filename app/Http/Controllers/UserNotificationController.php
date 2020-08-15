@@ -43,10 +43,7 @@ class UserNotificationController extends Controller
         try
         {
             $validated = $request->validated();
-            if ($this->repository->addUserNotification($request))
-            {
-                Session::flash('alert-success', 'success');
-            }
+            $this->repository->addUserNotification($request);
         }
         catch (Exception $exception)
         {
@@ -84,7 +81,6 @@ class UserNotificationController extends Controller
         try
         {
             $this->repository->readUserNotifications($user_id);
-            Session::flash('alert-success', 'success');
         }
         catch (Exception $exception)
         {
@@ -102,10 +98,7 @@ class UserNotificationController extends Controller
     {
         try
         {
-            if ($this->repository->deleteUserNotifications($user_id))
-            {
-                Session::flash('alert-success', 'success');
-            }
+            $deleted = $this->repository->deleteUserNotifications($user_id);
         }
         catch (Exception $exception)
         {

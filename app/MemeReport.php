@@ -25,22 +25,39 @@ class MemeReport extends Model
 
     public function addMemeReport($request)
     {
-        MemeReport::create([
+        $created = MemeReport::create([
             'reason' => $request->reason,
             'explanation' => $request->explanation,
             'meme_id' => $request->meme_id,
             'user_id' => $request->user_id
         ]);
-        return true;
+        if ($created) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
     }
 
     public function deleteMemeReportsForUser($user_id)
     {
-        EditRequest::where('user_id', $user_id)->delete();
+        $deleted = EditRequest::where('user_id', $user_id)->delete();
+        if ($deleted) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
     }
 
     public function deleteMemeReports($meme_id)
     {
-        EditRequest::where('meme_id', $meme_id)->delete();
+        $deleted = EditRequest::where('meme_id', $meme_id)->delete();
+        if ($deleted) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
     }
 }

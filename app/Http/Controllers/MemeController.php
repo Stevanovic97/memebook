@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Session;
 use App\Http\Requests\MemeRequest;
 use App\Repository\IRepositories\MemeIRepository;
 use App\Repository\IRepositories\CategoryIRepository;
@@ -37,7 +36,7 @@ class MemeController extends Controller
         try
         {
             // $comments = $this->commentRepository->getComments($meme_id);
-            $memes = $this->memeRepository->getAllMemes()->reverse();
+            $memes = $this->memeRepository->getAllMemes();
             $categories = $this->categoryRepository->getCategories();
 
             return view('meme.show')->with(compact('memes', 'categories'));
@@ -100,7 +99,7 @@ class MemeController extends Controller
     public function create()
     {
         $categories = $this->categoryRepository->getCategories();
-        return view('meme.create', compact(['categories']));
+        return view('meme.create', compact('categories'));
     }
 
     /**
@@ -123,7 +122,7 @@ class MemeController extends Controller
                 $img->save($path . $img_name);
             }
             $message = $this->memeRepository->addMeme($request, $img_name);
-    
+
             return redirect(route('memes.index'))->with($message);
         }
         catch (Exception $exception)
@@ -166,10 +165,9 @@ class MemeController extends Controller
         try
         {
             $validated = $request->validated();
-            $this->memeRepository->updateMeme($request, $meme_id);
-            Session::flash('alert-success', 'success');
+            $message = $this->memeRepository->updateMeme($request, $meme_id);
 
-            return redirect(route('memes.index'));
+            return redirect(route('memes.index'))->with($message);
         }
         catch (Exception $exception)
         {
@@ -187,10 +185,9 @@ class MemeController extends Controller
     {
         try
         {
-            $this->memeRepository->deleteMeme($meme_id);
-            Session::flash('alert-success', 'success');
+            $message = $this->memeRepository->deleteMeme($meme_id);
 
-            return redirect(route('memes.index'));
+            return redirect(route('memes.index'))->with($message);
         }
         catch (Exception $exception)
         {

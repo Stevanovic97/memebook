@@ -34,16 +34,27 @@ class EditRequest extends Model
 
     public function deleteEditRequest($editRequest_id)
     {
-        EditRequest::where('id', $editRequest_id)->delete();
+        $deleted = EditRequest::where('id', $editRequest_id)->delete();
+        if ($deleted) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
     }
 
     public function addEditRequest(EditRequestReq $request)
     {
-        EditRequest::create([
+        $created = EditRequest::create([
             'request_by_user_id' => Auth::id(),
             'request_to_user_id' => $request->user_id,
             'meme_id' => $request->meme_id,
         ]);
-        return true;
+        if ($created) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
     }
 }

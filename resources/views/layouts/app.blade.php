@@ -8,15 +8,11 @@
         <!-- SIDEBAR library imports -->
         <!-- CSS -->
         <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/sidebar.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('css/media-queries.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/toastr.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/applayout.css') }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500&display=swap">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-        <link rel="stylesheet" href="assets/css/jquery.mCustomScrollbar.min.css">
-        <link rel="stylesheet" href="assets/css/animate.css">
-        <link rel="stylesheet" href="assets/css/style.css">
-        <link rel="stylesheet" href="assets/css/media-queries.css">
 
         <!--Toast css -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.css">
@@ -38,14 +34,14 @@
     </head>
     <body>
         <nav class="navbar navbar-dark navbar-expand-md bg-dark fixed-top">
-            <a class="navbar-brand text-white" href="#">MemeBook</a>
+            <a class="navbar-brand text-white" href="{{ route('memes.index') }}"><i>MemeBook</i></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item active">
-                        <a class="nav-link text-white" href="#">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link text-white" href="{{ route('memes.index') }}">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ route('meme.create') }}">Upload meme</a>
@@ -53,25 +49,38 @@
                 </ul>
             </div>
 
-            <div class="p-2 float-right">
+            @auth
+            <div class="float-right">
+                <div class="icon">
+                    <img src="{{ URL::asset('images/Notification_image.png') }}" alt="none" width="100%" height="100%" />
+                    <div class="txt">15</div>
+                </div>
+            </div>
+            @endauth
+            <div class="float-right">
                 @if (Route::has('login'))
                     @auth
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->username }} <span class="caret"></span>
+                        <div class="dropdown">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"> {{ Auth::user()->name }} </span>
                             </a>
-
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                    document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
+                                <div>
+                                    <a class="dropdown-item" href="{{ route('user.single', [ 'id' => Auth::user()->id ]) }}">
+                                        My profile
+                                    </a>
+                                </div>
+                                <div>
+                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </div>
                             </div>
-                        </li>
+                        </div>
                     @else
                         <a class="btn btn-outline-primary" href="{{ route('login') }}">Login</a>
                         @if (Route::has('register'))
@@ -119,15 +128,6 @@
                         </ul>
                     </li>
                 </ul>
-                <div class="to-top">
-                    <a class="btn btn-primary btn-customized-3" href="#" role="button">
-                        <i class="fas fa-arrow-up"></i> Top
-                    </a>
-                </div>
-                <div class="dark-light-buttons">
-                    <a class="btn btn-primary btn-customized-4 btn-customized-dark" href="#" role="button">Dark</a>
-                    <a class="btn btn-primary btn-customized-4 btn-customized-light" href="#" role="button">Light</a>
-                </div>
             </nav>
             <!-- End sidebar -->
 
@@ -149,18 +149,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="assets/js/jquery.backstretch.min.js"></script>
-        <script src="assets/js/wow.min.js"></script>
-        <script src="assets/js/jquery.waypoints.min.js"></script>
-        <script src="assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
-        <script src="assets/js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.5/waypoints.min.js"></script>
+        <script src="//malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
         <script type="text/javascript" src="{{ URL::asset('js/sidebar.js') }}"></script>
 
         <!-- Toastr js -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.js.map"></script>
 
-        @if (session('flashMessage'))
+        @if (session('flashType'))
             <script>
                 toastr.options.onShown = {
                     "closeButton": false,
@@ -180,7 +177,11 @@
                     "hideMethod": "fadeOut",
                     "autohide": false,
                 };
-                toastr.success("{{ session('flashMessage') }}", 'Success');
+                @if (session('flashType') == 'success')
+                    toastr.success("{{ Session::get('flashMessage') }}", 'Success');
+                @elseif (session('flashType') == 'error')
+                    toastr.error("{{ Session::get('flashMessage') }}", 'Error');
+                @endif
             </script>
         @endif
     </body>
