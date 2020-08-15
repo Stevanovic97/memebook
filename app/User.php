@@ -26,4 +26,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function memes()
+    {
+        return $this->hasMany('App\Meme');
+    }
+
+    public function getUser($user_id)
+    {
+        return User::where('id', '=', $user_id)->first();
+    }
 }

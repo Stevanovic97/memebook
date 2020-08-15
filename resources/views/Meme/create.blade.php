@@ -45,5 +45,5 @@
         <button type="submit" id="btn-meme" class="btn btn-primary">Make Meme</button>
     </form>
 </div>
-<body>
+</body>
 </html>

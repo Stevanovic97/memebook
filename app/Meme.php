@@ -11,6 +11,11 @@ class Meme extends Model
 {
     protected $fillable = ['title', 'body', 'category_id', 'user_id', 'image'];
 
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
     public function category()
     {
         return $this->belongsTo('App\Category');
@@ -18,7 +23,12 @@ class Meme extends Model
 
     public function getAllMemes()
     {
-        return Meme::all();
+        return Meme::All();
+    }
+
+    public function getAllMemesForCategory($category_id)
+    {
+        return Meme::where('category_id', $category_id)->get();
     }
 
     public function getAllMemesForUser($user_id)

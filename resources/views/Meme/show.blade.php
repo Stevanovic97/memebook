@@ -8,7 +8,7 @@
             <article>
                 <header>
                     <div style="height: 20px; color: #999; font-size: 12px; margin-bottom: 8px;">
-                        <a>
+                        <a href="{{url(route('show.user', $meme->user_id))}}">
                             User Profile
                         </a>
                     </div>
@@ -20,7 +20,7 @@
                     <a href="Show meme route">
                         <picture>
                             <div class="col-md-8" style="">
-                                <img src="images/memes/{{$meme->image}}" alt="" loading="lazy"
+                                <img src="images/memes{{$meme->image}}" loading="lazy"
                                      style="width: 500px; height: 450px; object-fit: cover;"></div>
                         </picture>
                     </a>
@@ -39,6 +39,11 @@
                         Comments count
                     </a>
                 </p>
+                @if(Auth::user()->id==$meme->user_id)
+                    <a style="background-color: blue;" href="">Edit Meme</a>
+                    <a style="background-color: red;" href="{{url(route('meme.delete',$meme->id))}}">Delete Meme</a>
+                @endif
+                <br>
                 <div style="position: relative; width: 500px;">
                     <div class="row">
                         <div class="row" style="color:whitesmoke">
@@ -64,6 +69,7 @@
                     </div>
                 </div>
             </article>
+
             <br>
         @endforeach
     </div>

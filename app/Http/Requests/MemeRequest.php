@@ -24,6 +24,7 @@ class MemeRequest extends FormRequest
     public function rules()
     {
         return [
+            'image' => 'required',
             'title' => 'required|max:30',
             'body' => 'required|max:255',
         ];
