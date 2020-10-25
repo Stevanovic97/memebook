@@ -37,9 +37,8 @@ class MemeController extends Controller
      */
     public function index()
     {
-
+        // $comments = $this->commentRepository->getComments($meme_id);
         $memes = $this->memeRepository->getAllMemes();
-
         $categories = $this->categoryRepository->getCategories();
 
         return view('meme.show')->with(compact('memes', 'categories'));
@@ -95,7 +94,6 @@ class MemeController extends Controller
      */
     public function store(MemeRequest $request)
     {
-
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
@@ -136,13 +134,10 @@ class MemeController extends Controller
      */
     public function update(MemeRequest $request, $meme_id)
     {
-
         $validated = $request->validated();
-        $this->memeRepository->updateMeme($request, $meme_id);
-        Session::flash('alert-success', 'success');
+        $message = $this->memeRepository->updateMeme($request, $meme_id);
 
-        return redirect(route('memes.index'));
-
+        return redirect(route('memes.index'))->with($message);
     }
 
     /**
@@ -153,10 +148,8 @@ class MemeController extends Controller
      */
     public function destroy($meme_id)
     {
-        $this->memeRepository->deleteMeme($meme_id);
-        Session::flash('alert-success', 'success');
+        $message = $this->memeRepository->deleteMeme($meme_id);
 
-        return redirect(route('memes.index'));
-
+        return redirect(route('memes.index'))->with($message);
     }
 }

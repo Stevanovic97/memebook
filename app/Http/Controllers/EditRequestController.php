@@ -48,10 +48,7 @@ class EditRequestController extends Controller
         try
         {
             $validated = $request->validated();
-            if ($this->repository->addEditRequest($validated))
-            {
-                Session::flash('alert-success', 'success');
-            }
+            $created = $this->repository->addEditRequest($validated);
         }
         catch (Exception $exception)
         {
@@ -88,8 +85,7 @@ class EditRequestController extends Controller
     {
         try
         {
-            $this->repository->deleteEditRequest($edit_request_id);
-            Session::flash('alert-success', 'success');
+            $deleted = $this->repository->deleteEditRequest($edit_request_id);
         }
         catch (Exception $exception)
         {

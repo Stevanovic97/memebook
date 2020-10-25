@@ -74,8 +74,7 @@ class CommentController extends Controller
         try
         {
             $validated = $request->validated();
-            $this->repository->addComment($validated);
-            Session::flash('alert-success', 'success');
+            $created = $this->repository->addComment($validated);
         }
         catch (Exception $exception)
         {
@@ -106,14 +105,7 @@ class CommentController extends Controller
         try
         {
             $validated = $request->validated();
-            if ($this->repository->updateComment($validated, $comment_id))
-            {
-                Session::flash('alert-success', 'success');
-            }
-            else
-            {
-                Session::flash('alert-warning', 'warning');
-            }
+            $updated = $this->repository->updateComment($validated, $comment_id);
         }
         catch (Exception $exception)
         {
@@ -131,8 +123,7 @@ class CommentController extends Controller
     {
         try
         {
-            $this->repository->deleteComment($comment_id);
-            Session::flash('alert-success', 'success');
+            $deleted = $this->repository->deleteComment($comment_id);
         }
         catch (Exception $exception)
         {

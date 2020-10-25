@@ -72,10 +72,7 @@ class MemeReportController extends Controller
         try
         {
             $validated = $request->validated();
-            if ($this->repository->addMemeReport($validated))
-            {
-                Session::flash('alert-success', 'success');
-            }
+            $created = $this->repository->addMemeReport($validated);
         }
         catch (Exception $exception)
         {
@@ -93,8 +90,7 @@ class MemeReportController extends Controller
     {
         try
         {
-            $this->repository->deleteMemeReportsForUser($user_id);
-            Session::flash('alert-success', 'success');
+            $deleted = $this->repository->deleteMemeReportsForUser($user_id);
         }
         catch (Exception $exception)
         {
@@ -112,8 +108,7 @@ class MemeReportController extends Controller
     {
         try
         {
-            $this->repository->deleteMemeReports($meme_id);
-            Session::flash('alert-success', 'success');
+            $deleted = $this->repository->deleteMemeReports($meme_id);
         }
         catch (Exception $exception)
         {

@@ -26,16 +26,16 @@ class CommentRepository implements CommentIRepository
 
     public function deleteComment($comment_id)
     {
-        $this->model->deleteMemeComment($comment_id);
+        return $this->model->deleteMemeComment($comment_id);
     }
 
     public function addComment(CommentRequest $request)
     {
-        $this->model->addMemeComment($request);
+        return $this->model->addMemeComment($request);
     }
 
     public function updateComment(CommentRequest $request, $comment_id)
     {
-        $this->model->updateMemeComment($request, $comment_id);
+        return $this->model->updateMemeComment($request, $comment_id);
     }
 }

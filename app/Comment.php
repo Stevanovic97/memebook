@@ -8,12 +8,12 @@ class Comment extends Model
 {
     protected $fillable = ['comment_text'];
 
-    public function Meme()
+    public function meme()
     {
         return $this->belongsTo('App\Meme');
     }
 
-    public function User()
+    public function user()
     {
         return $this->belongsTo('App\Users');
     }
@@ -30,16 +30,28 @@ class Comment extends Model
 
     public function deleteMemeComment($comment_id)
     {
-        Comment::where('id', $comment_id)->delete();
+        $deleted = Comment::where('id', $comment_id)->delete();
+        if ($deleted) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
     }
 
     public function addMemeComment(CommentRequest $request)
     {
-        Comment::create([
+        $created = Comment::create([
             'comment_text' => $request->commentText,
             'meme_id' => $request->memeId,
             'user_id' => Auth::id(),
         ]);
+        if ($created) {
+            return MessageHelper::ToastMessage('Success');
+        } 
+        else {
+            return MessageHelper::ToastMessage('Error');
+        }
     }
 
     public function updateMemeComment(CommentRequest $request, $comment_id)
@@ -48,10 +60,16 @@ class Comment extends Model
         if (strcmp($comment->comment_text, $request->commentText) == 0)
         {
             $comment->comment_text = $request->commentText;
-            $comment->save();
-            return true;
+            $updated = $comment->save();
         }
-        else
-            return false;
+        if (isset($updated))
+        {
+            if ($updated) {
+                return MessageHelper::ToastMessage('Success');
+            }
+            else {
+                return MessageHelper::ToastMessage('Error');
+            }
+        }
     } 
 }
