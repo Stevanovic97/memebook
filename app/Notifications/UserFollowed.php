@@ -20,7 +20,7 @@ class UserFollowed extends Notification
      */
     public function __construct(User $follower)
     {
-        $this->follower=$follower;
+        $this->follower = $follower;
     }
 
     /**
@@ -37,6 +37,7 @@ class UserFollowed extends Notification
     public function toDatabase($notifiable)
     {
         return [
+            'id' => $this->id,
             'follower_id' => $this->follower->id,
             'follower_name' => $this->follower->name,
         ];

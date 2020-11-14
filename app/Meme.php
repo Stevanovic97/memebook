@@ -91,14 +91,4 @@ class Meme extends Model
             return MessageHelper::ToastMessage('Error');
         }
     }
-
-    public function upvoteMeme($meme_id, $user_id)
-    {
-
-    }
-
-    public function downvoteMeme($meme_id, $user_id)
-    {
-
-    }
 }

@@ -4,21 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request\MemeReportRequest;
 
-class MemeReportController extends Controller
+class MemeReportController extends MemeBookBaseController
 {
-    private $repository;
-
-    public function __construct(MemeIRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
-     * Display a listing of the resource for user.
-     *
-     * @param int user_id
-     * @return \Illuminate\Http\Response
-     */
     public function indexForUser($user_id)
     {
         try
@@ -32,12 +19,6 @@ class MemeReportController extends Controller
         }
     }
 
-    /**
-     * Display a listing of the resource for user.
-     *
-     * @param int @meme_id
-     * @return \Illuminate\Http\Response
-     */
     public function indexForMeme($meme_id)
     {
         try
@@ -51,22 +32,11 @@ class MemeReportController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('meme.report.show');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\MemeReportRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(MemeReportRequest $request)
     {
         try
@@ -80,12 +50,6 @@ class MemeReportController extends Controller
         }    
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $user_id
-     * @return \Illuminate\Http\Response
-     */
     public function destroyForUser($user_id)
     {
         try
@@ -98,12 +62,6 @@ class MemeReportController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $meme_id
-     * @return \Illuminate\Http\Response
-     */
     public function destroyForMeme($meme_id)
     {
         try

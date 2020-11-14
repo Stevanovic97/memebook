@@ -9,27 +9,30 @@ final class MessageHelper
         
     }
 
-    public static function ToastMessage($status)
+    public static function ToastMessage($status, $message = null)
     {
         switch ($status) {
             case 'Success': 
             {
                 return array(
                     'flashType' => 'success',
-                    'flashMessage' => 'This action was successful.'
+                    'flashTitle' => 'Success!',
+                    'flashMessage' => $message ? $message : 'This action was successful.'
                 );
             }
             case 'Warning': 
             {
                 return array(
                     'flashType' => 'warning',
-                    'flashMessage' => 'Warning! There was some problem!'
+                    'flashTitle' => 'Warning!',
+                    'flashMessage' => $message ? $message : 'Warning! There was some problem!'
                 );
             }
             case 'Error': 
             {
                 return array(
                     'flashType' => 'error',
+                    'flashTitle' => 'Error!',
                     'flashMessage' => 'Fail! Please try again.'
                 );
             }
@@ -37,6 +40,7 @@ final class MessageHelper
             {
                 return array(
                     'flashType' => 'error',
+                    'flashTitle' => 'Error!',
                     'flashMessage' => 'Fail! Please try again.'
                 );
             }

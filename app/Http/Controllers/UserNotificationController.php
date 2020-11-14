@@ -4,21 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request\UserNotificationRequest;
 
-class UserNotificationController extends Controller
+class UserNotificationController extends MemeBookBaseController
 {
-    private $repository;
-
-    public function __contruct(UserNotificationIRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @param int $user_id
-     * @return \Illuminate\Http\Response
-     */
     public function index($user_id)
     {
         try
@@ -32,12 +19,6 @@ class UserNotificationController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\UserNotificationRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(UserNotificationRequest $request)
     {
         try
@@ -51,12 +32,6 @@ class UserNotificationController extends Controller
         }    
     }
 
-    /**
-     * Gets the notification
-     *
-     * @param  int  $notification_id
-     * @return \Illuminate\Http\Response
-     */
     public function show($notification_id)
     {
         try
@@ -70,12 +45,6 @@ class UserNotificationController extends Controller
         }
     }
 
-    /**
-     * Reads all user notifications 
-     * 
-     * @param int $user_id
-     * @return \Illuminate\Http\Response
-     */
     public function readNotifications($user_id)
     {
         try
@@ -88,12 +57,6 @@ class UserNotificationController extends Controller
         }
     }
 
-    /**
-     * Remove all resources for specified user
-     *
-     * @param  int  $user_id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($user_id)
     {
         try

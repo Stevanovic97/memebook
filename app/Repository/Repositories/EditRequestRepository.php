@@ -1,8 +1,9 @@
 <?php
 namespace App\Repository\Repositories;
 
-use App\Repository\IRepositories\EditRequestIRepository;
 use App\EditRequest;
+use App\Http\Requests\EditRequestReq;
+use App\Repository\IRepositories\EditRequestIRepository;
 
 class EditRequestRepository implements EditRequestIRepository
 {

@@ -2,58 +2,78 @@
 
 namespace App\Http\Controllers;
 
-use App\Repository\IRepositories\UserIRepository;
-use Illuminate\Http\Request;
 use App\User;
+use App\MemeBookConstants;
+use App\Events\NewNotification;
 use App\Notifications\UserFollowed;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class UserController extends MemeBookBaseController
 {
-    private $userRepository;
-
-    public function __construct(UserIRepository $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
-
     public function show($user_id)
     {
         $user = $this->userRepository->getUser($user_id);
-        return view('User.showUser')->with(compact('user'));
+        $memes = $this->memeRepository->getAllMemesForUser($user_id);
+        $categories = $this->categoryRepository->getCategories();
+        $voted = array();
+        foreach ($memes as $meme)
+        {
+            $meme->votes = $this->voteRepository->getMemeVotesSum($meme->id);
+            $meme->username = $this->userRepository->getUser($meme->user_id)->name;
+            $meme->voted = Auth::user() ? $this->voteRepository->votedMemeByUser($meme->id, Auth::user()->id) :
+                                          array('upvoted' => 'white', 'downvoted' => 'white');
+        }
+        $voted = array_values($voted);
+
+        return view('User.show')->with(compact('user', 'memes', 'categories'));
     }
 
-    public function follow(User $user)
+    public function follow(Request $request)
     {
         $follower = auth()->user();
-        if(!$follower->isFollowing($user->id)) {
-            $follower->follow($user->id);
-
-            // sending a notification
-            $user->notify(new UserFollowed($follower));
-
-            return back()->withSuccess("You are now friends with {$user->name}");
+        if (!$follower->isFollowing($request->user_id))
+        {
+            $message = $follower->follow($request->user_id);
+            $followed_user = $this->userRepository->getUser($request->user_id);
+            //db-insert
+            $followed_user->notify(new UserFollowed($follower));
+            //pusher notification
+            event(new NewNotification($followed_user, MemeBookConstants::$notificationConstants['followUser']));
+            $notification_id = $follower->getNotification($request->user_id)->id;
+            return back()->with(compact('message', 'notification_id'));
         }
-        return back()->withError("You are already following {$user->name}");
+    }
+    
+    public function unfollow(Request $request)
+    {
+        $follower = auth()->user();
+        if ($follower->isFollowing($request->user_id)) 
+        {
+            $message = $follower->unfollow($request->user_id);
+            return back()->with($message);
+        }
     }
 
-    public function unfollow(User $user)
+    public function isFollowing(Request $request)
     {
-        $follower = auth()->user();
-        if($follower->isFollowing($user->id)) {
-            $follower->unfollow($user->id);
-            return back()->withSuccess("You are no longer friends with {$user->name}");
-        }
-        return back()->withError("You are not following {$user->name}");
+        $user_id = $request->user_id;
+        $isFollowing = auth()->user()->isFollowing($user_id);
+        return json_encode($isFollowing);
     }
 
     public function notification()
     {
-        //dd('upada');
-        return auth()->user()->unreadNotifications()->limit(5)->get()->toArray();
+        return $this->userRepository->getNotifications();
     }
 
-    public function readNotification($notificationId)
+    public function readNotification(Request $request)
     {
-        //$notification=auth()->
+        if ($request->getContent())
+        {
+            $followerId = $this->userRepository->markNotificationAsRead($request->getContent());
+            return $followerId;
+        }
     }
 }
