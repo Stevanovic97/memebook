@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\User;
+use App\Meme;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -16,6 +17,7 @@ class NewNotification implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $meme;
     public $fromUser;
     public $toUser;
     public $typeOfNotification;
@@ -25,10 +27,11 @@ class NewNotification implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(User $user, $typeOfNotification)
+    public function __construct(User $user, Meme $meme = NULL, $typeOfNotification)
     {
         $this->fromUser = Auth::user();
         $this->toUser = $user;
+        $this->meme = $meme;
         $this->typeOfNotification = $typeOfNotification;
     }
 
@@ -44,12 +47,18 @@ class NewNotification implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        $fromUserInfo = [
+        $notification_id = $this->fromUser->getNotification($this->toUser->id)->id;
+        $fromUserInfo = array(
             'fromUserId' => $this->fromUser->id,
             'fromUserName' => $this->fromUser->name,
-            'notificationType' => $this->typeOfNotification
-        ];
+            'notificationType' => $this->typeOfNotification,
+            'id' => $notification_id
+        );
 
+        if ($this->meme != NULL)
+        {
+            $fromUserInfo['meme_id'] = $this->meme->id; 
+        }
         return array_merge($this->toUser->toArray(), $fromUserInfo);
     }
 }

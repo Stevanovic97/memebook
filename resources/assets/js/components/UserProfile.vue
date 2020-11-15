@@ -13,10 +13,11 @@
                       :inline="true">
               </avatar>
             </h1>
-
           </div>
-          <a v-if="this.auth_user !== null && this.user.id == this.auth_user.id" href="">Edit Profile</a>
           <td>
+            <div>
+              <i><h4> {{ this.memesCount }} memes {{ this.user.followers }} Followers  {{ this.user.following }} Following </h4></i>
+            </div>
             <form v-if="this.auth_user !== null && this.auth_user.id != user.id && !this.isFollowing"
                  :action="this.follow_route" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_token" v-bind:value="csrfToken">
@@ -42,10 +43,16 @@
                 </button>
             </form>
           </td>
+          <a v-if="this.auth_user !== null && this.user.id == this.auth_user.id" href="">Edit Profile</a>
           <div>
             <div v-if="this.memes.data.length > 0">
               <div v-for="meme in this.memes.data">
-                <meme-component :meme="meme" :user="auth_user"> </meme-component>
+                <meme-component :meme="meme" 
+                                :user="auth_user"
+                                :memeimage="images_source + meme.image"
+                                :single_meme_route="'/meme/single/' + meme.id"
+                                :user_route="'/users/' + meme.user_id">
+                </meme-component>
               </div>
             </div>
             <div v-else>
@@ -75,7 +82,13 @@ export default {
     user: Object,
     auth_user: Object,
     follow_route: String,
-    unfollow_route: String
+    unfollow_route: String,
+    images_source: String
+  },
+  computed: {
+    memesCount: function() {
+        return this.memes.data.length > 0 ? this.memes.data.length : 0
+    }
   },
   data() {
     return {

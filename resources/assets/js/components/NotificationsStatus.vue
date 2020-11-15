@@ -9,7 +9,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right dropdown-menu-notifications" id="notificationsMenu" role="menu">
                     <li v-for="notification in notifications">
-                        <a v-on:click="readNotification(notification.notificationId)" class="d-flex">
+                        <a @click="readNotification(notification.notificationId)" class="d-flex">
                             <notification :notification="notification"></notification>
                         </a>
                         <div class="divider"></div>
@@ -39,7 +39,12 @@
     });
 
     export default {
-        props: ['user_id', 'notification_id'],
+        props: {
+            user_id: String,
+            notification_id: String,
+            all_notifications_route: { type: String, required: true },
+            read_notification_route: { type: String, required: true }
+        },
         data() {
             return {
                 notifications: [],
@@ -56,45 +61,56 @@
         mounted() {
             Echo.channel('memebook-channel.' + this.user_id)
             .listen('NewNotification', (notification) => {
-                if (notification.notificationType.includes("UserFollowed"))
-                {
-                    console.log('Upada');
-                    let notif = {
-                        description: 'User: ' + notification.fromUserName + ' is now following you.',
-                        notificationId: this.notification_id,
-                        time: new Date(notification.created_at)
-                    };
-                    this.notifications.push(notif);
-                }
+                this.notifications.push(this.createNotification(notification));
             });
         },
         methods: {
             async fetchNotifications() {
-                await $.ajax('/user/notifications').done(data => {
+                await $.ajax(this.all_notifications_route).done(data => {
                     data.forEach(notification => 
                     {
-                        this.notifications.push({
-                            description: 'User: ' + notification.data.follower_name + ' is now following you.',
-                            notificationId: notification.id,
-                            time: new Date(notification.created_at)
-                        });
-                        console.log(new Date(notification.created_at));
+                        this.notifications.push(this.createNotification(notification));
                     });
                 });
             },
-            readNotification(notificationId){
+            createNotification(notification) {
+                var notification = {
+                    notificationId: notification.id,
+                    time: new Date(notification.created_at),
+                    description: this.createDescription(notification)
+                };
+                return notification;
+            },
+            createDescription(notification) {
+                let followerName = this.isUndefined(notification.data) ? notification.fromUserName
+                                                                       : notification.data.follower_name;
+                let notificationType = this.isUndefined(notification.type) ? notification.notificationType
+                                                                           : notification.type;
+                if (notificationType.includes("UserFollowed"))
+                {
+                    return 'User: ' + followerName + ' is now following you.';
+                }
+                else if(notificationType.includes("NewMeme"))
+                {
+                    return 'User you are following ' + followerName + ' has posted a new meme.';
+                }
+            },
+            readNotification(notificationId) {
                 $.ajax({
                     type: 'POST',
-                    url: '/user/notification/read',
+                    url: this.read_notification_route,
                     data: notificationId,
                     contentType: 'application/json',
                     headers: {
                         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     },
                 })
-                .done((followerId) => {
-                    window.location = '/users/' + followerId;
+                .done((url) => {
+                    window.location = url;
                 })
+            },
+            isUndefined(type) {
+                return typeof type === 'undefined';
             }
         }
     }

@@ -10,7 +10,9 @@
                       :user='@json($user)'
                       :auth_user='@json(auth()->user())'
                       follow_route="{{ route('follow') }}"
-                      unfollow_route="{{ route('unfollow') }}">
+                      unfollow_route="{{ route('unfollow') }}"
+                      images_source="{{ URL::to('/') }}/images/memes/"
+                      >
         </user-profile>
     </div>
 @endsection

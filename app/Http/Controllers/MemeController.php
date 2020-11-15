@@ -13,48 +13,37 @@ class MemeController extends MemeBookBaseController
 {
     public function index()
     {
-        $memes = $this->memeRepository->getAllMemes();
+        $allMemes = $this->memeRepository->getAllMemes();
         $categories = $this->categoryRepository->getCategories();
-        $voted = array();
-        foreach ($memes as $meme)
-        {
-            $meme->votes = $this->voteRepository->getMemeVotesSum($meme->id);
-            $meme->username = $this->userRepository->getUser($meme->user_id)->name;
-            $meme->voted = Auth::user() ? $this->voteRepository->votedMemeByUser($meme->id, Auth::user()->id) :
-                                          array('upvoted' => 'white', 'downvoted' => 'white');
-        }
-        $voted = array_values($voted);
+        $memes = $this->fillMemeData($allMemes);
+
         return view('index')->with(compact('memes', 'categories'));
     }
 
     public function categoryIndex($category_id)
     {
-        $memes = $this->memeRepository->getAllMemesForCategory($category_id);
+        $allMemes = $this->memeRepository->getAllMemesForCategory($category_id);
         $categories = $this->categoryRepository->getCategories();
-        if (!isset($memes))
-            abort(404);
+        $memes = $this->fillMemeData($allMemes);
 
         return view('meme.show')->with(compact('memes', 'categories'));
     }
 
     public function userIndex($user_id)
     {
-        $memes = $this->memeRepository->getAllMemesForUser($user_id);
+        $allMemes = $this->memeRepository->getAllMemesForUser($user_id);
         $categories = $this->categoryRepository->getCategories();
-        if (!isset($memes))
-            abort(404);
+        $memes = $this->fillMemeData($allMemes);
 
-        return view('meme.show')->with(compact('memes', 'categories'));
+        return view('meme.show-content')->with(compact('memes', 'categories'));
     }
 
-    public function getMeme($meme_id)
+    public function singleMeme($meme_id)
     {
-        $meme = $this->memeRepository->getMeme($meme_id);
-        if (!isset($meme))
-            abort(404);
+        $singleMeme = $this->memeRepository->getMeme($meme_id);
+        $meme = $this->fillMemeData($singleMeme);
 
-        return view('meme.show')->with(compact('meme'));
-
+        return view('meme.single')->with('meme', $meme);
     }
 
     public function create()
@@ -66,7 +55,6 @@ class MemeController extends MemeBookBaseController
     public function store(MemeRequest $request)
     {
         $validated = $request->validated();
-
         if ($request->hasFile('image')) {
             $img_name = ImageHelper::CreateImage($request->file('image'), 'images/memes');
             $message = $this->memeRepository->addMeme($request, $img_name);
@@ -78,11 +66,7 @@ class MemeController extends MemeBookBaseController
     public function edit($meme_id)
     {
         $meme = $this->memeRepository->getMeme($meme_id);
-        if (!isset($meme))
-            abort(404);
-
         return view('meme.edit')->with(compact('meme'));
-
     }
 
     public function update(MemeRequest $request, $meme_id)
@@ -96,12 +80,11 @@ class MemeController extends MemeBookBaseController
     public function destroy($meme_id)
     {
         $message = $this->memeRepository->deleteMeme($meme_id);
-
         return redirect(route('memes.index'))->with($message);
     }
 
     public function vote(Request $request)
     {
-        return $this->voteRepository->voteMeme($request->meme_id, $request->user_id, $request->vote);
+        return $this->voteRepository->voteMeme($request->meme_id, Auth::user()->id, $request->vote);
     }
 }

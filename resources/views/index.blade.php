@@ -11,5 +11,5 @@
 @endsection
 
 @section('content')
-    @include('meme.show', ['memes' => $memes])
+    @include('meme.show-content', ['memes' => $memes])
 @endsection

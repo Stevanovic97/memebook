@@ -89,7 +89,21 @@ class User extends Authenticatable
     {
         $notification = auth()->user()->unreadNotifications()->where('id', $notificationId)->first();
         $notification->markAsRead();
-        return $notification->data['follower_id'];
+        $url = $this->createNotificationUrl($notification);
+
+        return $url;
+    }
+
+    private function createNotificationUrl($notification)
+    {
+        if (strpos($notification->type, "UserFollowed") !== false)
+        {
+            return route('user.show', $notification->data['follower_id']);
+        }
+        else if (strpos($notification->type, "NewMeme") !== false)
+        {
+            return route('meme.single', $notification->data['meme_id']);
+        }
     }
 
     /**

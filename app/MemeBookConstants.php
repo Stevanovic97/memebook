@@ -11,5 +11,6 @@ final class MemeBookConstants
 
     public static $notificationConstants = [
         'followUser' => 'App\\Notifications\\UserFollowed',
+        'newMeme' => 'App\\Notifications\\NewMeme',
     ];
 }

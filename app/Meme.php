@@ -46,7 +46,7 @@ class Meme extends Model
 
     public function getMeme($meme_id)
     {
-        return Meme::where('id', $meme_id)->get();
+        return Meme::where('id', $meme_id)->first();
     }
 
     public function deleteMeme($meme_id)

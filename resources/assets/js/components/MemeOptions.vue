@@ -32,7 +32,7 @@
       <div class="user-options row-fluid">
         <div class="profile-view">
           <b><h5>User profile:</h5> </b>
-          <a :href="'/users/' + this.meme.user_id">
+          <a :href="this.user_route">
             <span><h4>{{ this.username }}</h4></span>
           </a>
         </div>
@@ -61,6 +61,7 @@ export default {
     meme: Object,
     username: String,
     user: Object,
+    user_route: String
   },
   methods: {
     upvote() {
@@ -69,7 +70,7 @@ export default {
           "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         url: "/meme/vote",
-        data: { meme_id: this.meme.id, user_id: this.meme.user_id, vote: 1 },
+        data: { meme_id: this.meme.id, vote: 1 },
         type: "POST",
         success: function (data) {
           var upvoteButton = $("#meme_upvote-" + data.meme_id);
@@ -99,7 +100,7 @@ export default {
           "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         url: "/meme/vote",
-        data: { meme_id: this.meme.id, user_id: this.meme.user_id, vote: -1 },
+        data: { meme_id: this.meme.id, vote: -1 },
         type: "POST",
         success: function (data) {
           var upvoteButton = $("#meme_upvote-" + data.meme_id);

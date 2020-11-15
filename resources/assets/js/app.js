@@ -29,6 +29,7 @@ Vue.component('toast', require('./components/Toast.vue'));
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('notifications-status', require('./components/NotificationsStatus.vue'));
 Vue.component('notification-alert', require('./components/NotificationAlert.vue'));
+Vue.component('report-meme', require('./components/ReportMemeModal.vue'));
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

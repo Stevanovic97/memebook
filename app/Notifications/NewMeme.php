@@ -7,20 +7,23 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\User;
+use App\Meme;
 
-class UserFollowed extends Notification implements ShouldQueue
+class NewMeme extends Notification implements ShouldQueue
 {
     use Queueable;
 
     protected $follower;
+    protected $meme;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(User $follower)
+    public function __construct(User $follower, Meme $meme)
     {
         $this->follower = $follower;
+        $this->meme = $meme;
     }
 
     /**
@@ -34,12 +37,18 @@ class UserFollowed extends Notification implements ShouldQueue
         return ['database'];
     }
 
+    /**
+     * Get the mail representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\MailMessage
+     */
     public function toDatabase($notifiable)
     {
         return [
             'follower_id' => $this->follower->id,
             'follower_name' => $this->follower->name,
-            'id' => $this->id
+            'meme_id' => $this->meme->id
         ];
     }
 

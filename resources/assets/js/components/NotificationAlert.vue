@@ -30,6 +30,11 @@
                         this.title = "New follower!";
                         this.message = "User " + notification.fromUserName + " is now following you.";
                     }
+                    else if (notification.notificationType.includes("NewMeme"))
+                    {
+                        this.title = "New meme!";
+                        this.message = "User you are following " + notification.fromUserName + " has posted a new meme.";
+                    }
                 });
         }
     }

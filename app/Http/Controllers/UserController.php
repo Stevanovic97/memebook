@@ -7,7 +7,6 @@ use App\MemeBookConstants;
 use App\Events\NewNotification;
 use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends MemeBookBaseController
@@ -15,17 +14,11 @@ class UserController extends MemeBookBaseController
     public function show($user_id)
     {
         $user = $this->userRepository->getUser($user_id);
-        $memes = $this->memeRepository->getAllMemesForUser($user_id);
+        $user->following = $user->follows()->count();
+        $user->followers = $user->followers()->count();
         $categories = $this->categoryRepository->getCategories();
-        $voted = array();
-        foreach ($memes as $meme)
-        {
-            $meme->votes = $this->voteRepository->getMemeVotesSum($meme->id);
-            $meme->username = $this->userRepository->getUser($meme->user_id)->name;
-            $meme->voted = Auth::user() ? $this->voteRepository->votedMemeByUser($meme->id, Auth::user()->id) :
-                                          array('upvoted' => 'white', 'downvoted' => 'white');
-        }
-        $voted = array_values($voted);
+        $allUserMemes = $this->memeRepository->getAllMemesForUser($user_id);
+        $memes = $this->fillMemeData($allUserMemes);
 
         return view('User.show')->with(compact('user', 'memes', 'categories'));
     }
@@ -37,12 +30,10 @@ class UserController extends MemeBookBaseController
         {
             $message = $follower->follow($request->user_id);
             $followed_user = $this->userRepository->getUser($request->user_id);
-            //db-insert
             $followed_user->notify(new UserFollowed($follower));
-            //pusher notification
-            event(new NewNotification($followed_user, MemeBookConstants::$notificationConstants['followUser']));
-            $notification_id = $follower->getNotification($request->user_id)->id;
-            return back()->with(compact('message', 'notification_id'));
+            event(new NewNotification($followed_user, NULL, MemeBookConstants::$notificationConstants['followUser']));
+            
+            return back()->with($message);
         }
     }
     
@@ -63,7 +54,7 @@ class UserController extends MemeBookBaseController
         return json_encode($isFollowing);
     }
 
-    public function notification()
+    public function notifications()
     {
         return $this->userRepository->getNotifications();
     }
