@@ -14,8 +14,8 @@
 Auth::routes();
 
 Route::get('/', 'MemeController@index')->name('memes.index');
+//category routes
 Route::get('/{category_id}', 'MemeController@categoryIndex')->name('filter.category');
-
 Route::group(['middleware' => 'auth' ], function() {
     //meme routes
     Route::get('/meme/create', 'MemeController@create')->name('meme.create');

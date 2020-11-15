@@ -63,8 +63,8 @@ class UserController extends MemeBookBaseController
     {
         if ($request->getContent())
         {
-            $followerId = $this->userRepository->markNotificationAsRead($request->getContent());
-            return $followerId;
+            $urlFromNotification = $this->userRepository->markNotificationAsRead($request->getContent());
+            return $urlFromNotification;
         }
     }
 }
