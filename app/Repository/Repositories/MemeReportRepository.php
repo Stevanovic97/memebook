@@ -2,6 +2,7 @@
 namespace App\Repository\Repositories;
 
 use App\MemeReport;
+use App\Http\Requests\MemeReportRequest;
 use App\Repository\IRepositories\MemeReportIRepository;
 use Illuminate\Http\Request;
 
