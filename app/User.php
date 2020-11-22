@@ -3,6 +3,8 @@
 namespace App;
 
 use App\Meme;
+use App\MessageHelper;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -16,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'avatar'
     ];
 
     /**
@@ -31,6 +33,16 @@ class User extends Authenticatable
     public function memes()
     {
         return $this->hasMany('App\Meme');
+    }
+
+    public function getUser($user_id)
+    {
+        $user = User::findOrFail($user_id);
+        $user->avatar = URL::to('/') . '/images/user-profile-images/' . $user->avatar;
+        $user->following = $user->follows()->count();
+        $user->followers = $user->followers()->count();
+        
+        return $user;
     }
 
     public function followers()
@@ -48,24 +60,76 @@ class User extends Authenticatable
     public function follow($userId)
     {
         $this->follows()->attach($userId);
-        return $this;
+        $followedUser = User::where('id', $userId)->first();
+        $followMessage = MessageHelper::ToastMessage('success', true, 'Your are now following ' . $followedUser->name);
+       
+        return compact('followMessage');
     }
 
     public function unfollow($userId)
     {
         $this->follows()->detach($userId);
-        return $this;
+        $user = User::where('id', $userId)->first();
+
+        return MessageHelper::ToastMessage('warning', true, 'You are no longer following ' . $user->name);
     }
 
     public function isFollowing($userId)
     {
-        return (boolean) $this->follows()->where('follows_id', $userId)->first();
+        $exists = $this->follows()->where('follows_id', $userId)->count();
+        return $exists > 0;
     }
 
-    public function getUser($user_id)
+    public function getNotifications()
     {
-        return User::where('id', '=', $user_id)->first();
+        return auth()->user() ? auth()->user()->unreadNotifications()->get()->toArray()
+                              : null;
     }
 
+    public function getNotification($userId)
+    {
+        $user = User::where('id', $userId)->first();
+        $createdNotification = $user->unreadNotifications()->where('notifiable_id', $userId)->first();
+       
+        return $createdNotification;
+    }
 
+    public function markNotificationAsRead($notificationId)
+    {
+        $notification = auth()->user()->unreadNotifications()->where('id', $notificationId)->first();
+        $notification->markAsRead();
+        $url = $this->createNotificationUrl($notification);
+
+        return $url;
+    }
+
+    private function createNotificationUrl($notification)
+    {
+        if (strpos($notification->type, "UserFollowed") !== false)
+        {
+            return route('user.show', $notification->data['follower_id']);
+        }
+        else if (strpos($notification->type, "NewMeme") !== false)
+        {
+            return route('meme.single', $notification->data['meme_id']);
+        }
+    }
+
+    /**
+     * Return the user attributes.
+
+     * @return array
+     */
+    public static function getAuthor($id)
+    {
+        $user = self::find($id);
+        return [
+            'id'     => $user->id,
+            'name'   => $user->name,
+            'email'  => $user->email,
+            'url'    => '',  // Optional
+            'avatar' => 'gravatar',  // Default avatar
+            'admin'  => $user->role === 'admin', // bool
+        ];
+    }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemeReport extends Model
 {
-    protected $fillable = ['reason', 'explanation'];
+    protected $fillable = ['reason', 'explanation', 'meme_id', 'user_id'];
 
     public function meme()
     {
@@ -23,19 +23,28 @@ class MemeReport extends Model
         return MemeReport::where('meme_id', $meme_id)->get();
     }
 
-    public function addMemeReport($request)
+    public function addMemeReport($request, $user_id)
     {
-        $created = MemeReport::create([
-            'reason' => $request->reason,
-            'explanation' => $request->explanation,
-            'meme_id' => $request->meme_id,
-            'user_id' => $request->user_id
-        ]);
-        if ($created) {
-            return MessageHelper::ToastMessage('Success');
-        } 
-        else {
-            return MessageHelper::ToastMessage('Error');
+        $report = MemeReport::where('meme_id', '=', $request->meme_id)
+                            ->where('user_id', '=', $user_id)->first();
+        if ($report === null)
+        {
+            $created = MemeReport::create([
+                'reason' => $request->reason,
+                'explanation' => $request->explanation,
+                'meme_id' => $request->meme_id,
+                'user_id' => $user_id
+            ]);
+            if ($created) {
+                return MessageHelper::ToastMessage('success', false, 'MemeReportSuccess');
+            } 
+            else {
+                return MessageHelper::ToastMessage('danger', false, 'MemeReportFail');
+            }
+        }
+        else
+        {
+            return MessageHelper::ToastMessage('warning', true, 'You have already reported this meme!');
         }
     }
 
@@ -43,10 +52,10 @@ class MemeReport extends Model
     {
         $deleted = EditRequest::where('user_id', $user_id)->delete();
         if ($deleted) {
-            return MessageHelper::ToastMessage('Success');
+            return MessageHelper::ToastMessage('success');
         } 
         else {
-            return MessageHelper::ToastMessage('Error');
+            return MessageHelper::ToastMessage('danger');
         }
     }
 
@@ -54,10 +63,10 @@ class MemeReport extends Model
     {
         $deleted = EditRequest::where('meme_id', $meme_id)->delete();
         if ($deleted) {
-            return MessageHelper::ToastMessage('Success');
+            return MessageHelper::ToastMessage('success');
         } 
         else {
-            return MessageHelper::ToastMessage('Error');
+            return MessageHelper::ToastMessage('danger');
         }
     }
 }

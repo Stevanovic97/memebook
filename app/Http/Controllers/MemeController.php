@@ -2,154 +2,191 @@
 
 namespace App\Http\Controllers;
 
-use http\Env\Request;
 use Session;
-use App\Http\Requests\MemeRequest;
-use App\Repository\IRepositories\MemeIRepository;
-use App\Repository\IRepositories\CategoryIRepository;
-use App\Repository\IRepositories\CommentIRepository;
-use Illuminate\Support\Facades\Auth;
-
-
 use App\Meme;
-use Image;
+use App\ImageHelper;
+use App\MessageHelper;
+use App\MemeBookConstants;
+use Illuminate\Http\Request;
+use App\Http\Requests\MemeRequest;
+use App\Http\Requests\VoteRequest;
+use App\Http\Requests\ReportRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
-
-class MemeController extends Controller
+class MemeController extends MemeBookBaseController
 {
-    private $memeRepository;
-    private $categoryRepository;
-    private $commentRepository;
-
-    public function __construct(MemeIRepository $memeRepository,
-                                CategoryIRepository $categoryRepository,
-                                CommentIRepository $commentRepository)
-    {
-        $this->memeRepository = $memeRepository;
-        $this->categoryRepository = $categoryRepository;
-        $this->commentRepository = $commentRepository;
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        // $comments = $this->commentRepository->getComments($meme_id);
         $memes = $this->memeRepository->getAllMemes();
         $categories = $this->categoryRepository->getCategories();
+        $reasonsToReport = MemeBookConstants::$reasonsToReport;
 
-        return view('meme.show')->with(compact('memes', 'categories'));
-
+        return view('index')->with(compact('memes', 'categories', 'reasonsToReport'));
     }
 
     public function categoryIndex($category_id)
     {
-        $memes = $this->memeRepository->getAllMemesForCategory($category_id);
-        $categories = $this->categoryRepository->getCategories();
-        if (!isset($memes))
-            abort(404);
+        if (isset($category_id))
+        {
+            $memes = $this->memeRepository->getAllMemesForCategory($category_id);
+            $categories = $this->categoryRepository->getCategories();
+            $reasonsToReport = MemeBookConstants::$reasonsToReport;
 
-        return view('meme.show')->with(compact('memes', 'categories'));
+            return view('meme.show')->with(compact('memes', 'categories', 'reasonsToReport'));
+        }
+        else
+        {
+            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            return back()->with($message);
+        }
     }
 
-    public function userIndex($user_id)
+    public function singleMeme($meme_id)
     {
-        $memes = $this->memeRepository->getAllMemesForUser($user_id);
-        $categories = $this->categoryRepository->getCategories();
-        if (!isset($memes))
-            abort(404);
-
-        return view('meme.show')->with(compact('memes', 'categories'));
+        if (isset($meme_id))
+        {
+            try
+            {
+                $meme = $this->memeRepository->getMeme($meme_id);
+                $reasonsToReport = MemeBookConstants::$reasonsToReport;
+    
+                return view('meme.single')->with(compact('meme', 'reasonsToReport'));
+            }
+            catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
+            {
+                $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+                return back()->with($message);
+            }
+        }
+        else
+        {
+            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            return back()->with($message);
+        }
     }
 
-    public function getMeme($meme_id)
-    {
-        $meme = $this->memeRepository->getMeme($meme_id);
-        if (!isset($meme))
-            abort(404);
-
-        return view('meme.show')->with(compact('meme'));
-
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        $categories = $this->categoryRepository->getCategories();
-        return view('meme.create', compact('categories'));
-    }
+        try 
+        {
+            $apiData = json_decode(file_get_contents('https://api.imgflip.com/get_memes'), true);
+            $apiMemeImages = $apiData['data']['memes'];
+            $categories = $this->categoryRepository->getCategories();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\MemeRequest $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(MemeRequest $request)
-    {
-        $validated = $request->validated();
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $img = Image::make($file);
-            $img_name = "/" . time() . "_" . $file->getClientOriginalExtension();
-            $path = public_path('images/memes');
-            $img->save($path . $img_name);
+            return view('meme.create', compact('apiMemeImages', 'categories'));
         }
-        $message = $this->memeRepository->addMeme($request, $img_name);
-
-        return redirect(route('memes.index'))->with($message);
-
+        catch (Exception $ex)
+        {
+            \Debugbar::addThrowable($ex);
+            Log::error($ex->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), MemeRequest::rules());
+        if ($validator->fails()) {
+            $message = MessageHelper::ToastMessage('danger', true, $validator->messages()
+                                                                             ->first());
+            return back()->withInput()->with($message);
+        }
+
+        if ($request->ajax()) {
+            $message = $this->memeRepository->addApiMeme($request);
+            return response()->json(['url' => route('memes.index')]);
+        }
+        
+        if ($request->hasFile('image')) {
+            $img_name = ImageHelper::CreateImage($request->file('image'), 'images/memes');
+            $message = $this->memeRepository->addMeme($request, $img_name);
+        }
+        return redirect(route('memes.index'))->with($message);
+    }
+
     public function edit($meme_id)
     {
-        $meme = $this->memeRepository->getMeme($meme_id);
-        if (!isset($meme))
-            abort(404);
-
-        return view('meme.edit')->with(compact('meme'));
-
+        if (isset($meme_id))
+        {
+            $meme = $this->memeRepository->getMeme($meme_id);
+            return view('meme.edit')->with(compact('meme'));
+        }
+        else
+        {
+            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            return back()->with($message);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\MemeRequest $request
-     * @param int $meme_id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(MemeRequest $request, $meme_id)
+    public function update(Request $request, $meme_id)
     {
-        $validated = $request->validated();
-        $message = $this->memeRepository->updateMeme($request, $meme_id);
-
-        return redirect(route('memes.index'))->with($message);
+        if (isset($meme_id))
+        {
+            $validator = Validator::make($request->all(), MemeRequest::rules());
+            if ($validator->fails()) {
+                $message = MessageHelper::ToastMessage('danger', true, $validator->messages()
+                                                                                 ->first());
+                return back()->withInput()->with($message);
+            }
+            $message = $this->memeRepository->updateMeme($request, $meme_id);
+        }
+        else
+        {
+            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            return back()->with($message);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $meme_id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($meme_id)
+    public function deleteMeme(Request $request)
     {
-        $message = $this->memeRepository->deleteMeme($meme_id);
+        if (isset($request->meme_id))
+        {
+            try
+            {
+                $message = $this->memeRepository->deleteMeme($request->meme_id);
+                return redirect(route('memes.index'))->with($message);
+            }
+            catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
+            {
+                $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+                return back()->with($message);
+            }
+        }
+        else 
+        {
+            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            return back()->with($message);
+        }
+    }
 
-        return redirect(route('memes.index'))->with($message);
+    public function vote(Request $request)
+    {
+        $validator = Validator::make($request->all(), VoteRequest::rules());
+        if ($validator->fails()) 
+        {
+            $message = MessageHelper::ToastMessage('danger', true, $validator->messages()
+                                                                             ->first());
+            return response()->json($message, Response::HTTP_BAD_REQUEST);
+        }
+        if (Auth::user()->id)
+        {
+            $createdVote = $this->voteRepository->voteMeme($request->meme_id, Auth::user()->id, $request->vote);
+            return $createdVote;
+        }
+    }
+
+    public function reportMeme(Request $request)
+    {
+        $validator = Validator::make($request->all(), ReportRequest::rules());
+        if ($validator->fails()) 
+        {
+            $message = MessageHelper::ToastMessage('danger', true, $validator->messages()
+                                                                             ->first());
+            return back()->withInput()->with($message);
+        }
+
+        $message = $this->memeReportRepository->addMemeReport($request, Auth::user()->id);
+        return back()->withInput()->with($message);
     }
 }

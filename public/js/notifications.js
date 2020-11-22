@@ -31,7 +31,7 @@ function showNotifications(notifications, target) {
         $(target).append(htmlElements.join(''));
         $(target).addClass('has-notifications')
     } else {
-        $(target).append('<li class="dropdown-header">No notifications</li>');
+        $(target).append('<li role="presentation" class="dropdown-header">No notifications</li>');
         $(target).removeClass('has-notifications');
     }
 }

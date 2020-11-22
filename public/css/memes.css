@@ -1,0 +1,116 @@
+.meme-container {
+    display: flex;
+    justify-content: center;
+}
+
+.meme {
+    display: flex;
+    flex-direction: column;
+    justify-content: safe;
+    width: 600px; 
+    position: relative;
+    margin-bottom: 7px;
+    background-color: black;
+    color: white;
+}
+
+.article-style {
+    margin-top: 50px;
+    justify-content: center;
+}
+
+.meme-img {
+    display: flex;
+    width: 500px; 
+    height: 450px;
+    object-fit: cover;
+}
+
+.right-side {
+    display: flex;
+    justify-content: safe;
+    flex-direction: column;
+}
+
+.control-panel {
+    display: grid;
+    grid-gap: 10px;
+}
+
+.centered-element {
+    display: flex;
+    margin: 0 auto;
+    flex-grow: 0;
+    justify-content: center;
+} 
+
+.profile-options {
+    float: left;
+    width: 20%;
+}
+
+.user-options {
+    float: right;
+    width: 80%;
+}
+
+.profile-view {
+    float: right;
+    color: #666;
+}
+
+.meme-options {
+    float: right;
+    margin: 5px;
+}
+
+.report-meme {
+    display: flex;
+    flex-grow: 0;
+    justify-content: center;
+    margin-top: 20px;
+} 
+
+#comments {
+    display: flex;
+    margin-top: 50px;
+    margin-left: 60px;
+    position: relative;
+    border: solid;
+    border-radius:2px;
+    overflow: auto;
+    padding-left: 2px;
+    display: inline-block;
+    list-style-type: none;
+    white-space: nowrap;
+    overflow-x: clip;
+    padding-right: 20px; 
+    height: 550px;
+    width: 250px;
+}
+
+.dividing, #write-comment { 
+    text-align: center;
+}
+
+#showComment, #write-comment, #commentSubmit { 
+    display: block;
+}
+
+#report_meme_button {
+    background-color: #6ebbdd;
+    color: white;
+}
+
+#delete_meme_button {
+    background-color: #f35b3f; 
+    color: white;
+    margin-left: 5px;
+}
+
+.no-memes-text {
+    position: absolute;
+    top: 50%;
+    left: 25%; 
+    margin: 0 auto;
+}

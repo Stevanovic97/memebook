@@ -13,10 +13,20 @@
         "axios": "^0.18",
         "bootstrap": "^4.5.2",
         "cross-env": "^5.1",
+        "css-loader": "^5.0.0",
         "jquery": "^3.2",
         "laravel-mix": "^2.0",
         "lodash": "^4.17.4",
         "popper.js": "^1.12",
-        "vue": "^2.5.7"
+        "vue": "^2.6.12",
+        "vue-template-compiler": "^2.6.12"
+    },
+    "dependencies": {
+        "laravel-echo": "^1.9.0",
+        "pusher-js": "^7.0.0",
+        "sass": "^1.28.0",
+        "vue-avatar": "^2.3.3",
+        "vue-strap": "github:wffranco/vue-strap",
+        "vue-timeago": "^5.1.2"
     }
 }

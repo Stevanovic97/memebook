@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
-
     $('.dismiss, .overlay').on('click', function() {
+        $('.open-menu').show();
         $('.sidebar').removeClass('active');
         $('.overlay').removeClass('active');
     });
@@ -12,8 +12,8 @@ jQuery(document).ready(function() {
         // close opened sub-menus
         $('.collapse.show').toggleClass('show');
         $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+        $('.open-menu').hide();
     });
-
     /* other code */
 
 });

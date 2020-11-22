@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
+@section('title', 'Single meme')
+
+@section('navbar')
+    @include('partials.main-navbar') 
+@endsection
+
 @section('content')
-    <h2>{{$meme->title}}</h2>
-    <h5>{{$meme->body}}</h5>
-    <a href="{{url(route('destroy', $meme->id))}}">del</a>
+    @include('meme.single-content', ['meme' => $meme, 'reasonsToReport' => $reasonsToReport])
+    @include('meme.report-content', ['reasonsToReport' => $reasonsToReport])
 @endsection

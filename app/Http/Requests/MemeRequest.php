@@ -21,12 +21,19 @@ class MemeRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public static function rules()
     {
-        return [
-            'image' => 'required',
-            'title' => 'required|max:30',
-            'body' => 'required|max:255',
-        ];
+        $rules = [];
+        if (gettype(request()->image) === 'string') {
+            $rules['image'] = 'string'; 
+        }
+        else {
+            $rules['image'] = 'mimes:jpeg,png,jpg,gif,svg|max:2048';
+        }
+
+        $rules['body'] = 'required|max:255';
+        $rules['title'] = 'required|max:30';
+
+        return $rules;
     }
 }

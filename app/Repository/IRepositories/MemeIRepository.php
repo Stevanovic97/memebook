@@ -2,7 +2,7 @@
 
 namespace App\Repository\IRepositories;
 
-use App\Http\Requests\MemeRequest;
+use Illuminate\Http\Request;
 
 interface MemeIRepository
 {
@@ -16,7 +16,9 @@ interface MemeIRepository
 
     function deleteMeme($meme_id);
 
-    function addMeme(MemeRequest $request, $img_name);
+    function addMeme(Request $request, $img_name);
 
-    function updateMeme(MemeRequest $request, $meme_id);
+    function addApiMeme($data);
+
+    function updateMeme(Request $request, $meme_id);
 }

@@ -18,9 +18,9 @@ class CreateMemeReportsTable extends Migration
             $table->enum('reason', array('Violations of privacy', 'Spam', 'Personal disputes', 'Discrimination'));
             $table->string('explanation');
             $table->unsignedInteger('meme_id');
-            $table->foreign('meme_id')->references('id')->on('memes')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('meme_id')->references('id')->on('memes')->onDelete('cascade');
             $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

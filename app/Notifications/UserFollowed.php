@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\User;
 
-class UserFollowed extends Notification
+class UserFollowed extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -20,7 +20,7 @@ class UserFollowed extends Notification
      */
     public function __construct(User $follower)
     {
-        $this->follower=$follower;
+        $this->follower = $follower;
     }
 
     /**
@@ -39,6 +39,7 @@ class UserFollowed extends Notification
         return [
             'follower_id' => $this->follower->id,
             'follower_name' => $this->follower->name,
+            'id' => $this->id
         ];
     }
 
