@@ -41,7 +41,7 @@
             v-if="this.user !== null"
             id="delete_meme_button"
             class="btn"
-            href=""
+            :href="this.edit_meme_route"
             >Edit Meme
           </a>
           <a style="display:inline-block;">
@@ -70,7 +70,8 @@ export default {
     username: String,
     user: Object,
     user_route: String,
-    delete_meme_route: String
+    delete_meme_route: String,
+    edit_meme_route: String
   },
   data() {
     return {

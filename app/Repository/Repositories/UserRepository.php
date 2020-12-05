@@ -6,12 +6,17 @@ use App\Repository\IRepositories\UserIRepository;
 use Illuminate\Support\Facades\Auth;
 
 class UserRepository implements UserIRepository{
-    
+
     protected $model;
 
     public function __construct(User $model)
     {
         $this->model = $model;
+    }
+
+    public function getUserById($user_id)
+    {
+        return $this->model->getUserById($user_id);
     }
 
     public function getUser($user_id)
@@ -21,7 +26,7 @@ class UserRepository implements UserIRepository{
 
     public function getNotifications()
     {
-        return $this->model->getNotifications(); 
+        return $this->model->getNotifications();
     }
 
     public function markNotificationAsRead($notificationId)

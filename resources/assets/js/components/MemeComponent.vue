@@ -17,6 +17,7 @@
           <h2>{{ this.meme.title }}</h2>
           <br />
           <h4>{{ this.meme.body }}</h4>
+
         </div>
       </div>
       <meme-options
@@ -25,6 +26,7 @@
         :username="this.meme.username"
         :user_route="this.user_route"
         :delete_meme_route="this.delete_meme_route"
+        :edit_meme_route="this.edit_meme_route"
       ></meme-options>
     </article>
     <br />
@@ -42,7 +44,8 @@ export default {
     user: Object,
     single_meme_route: String,
     user_route: String,
-    delete_meme_route: String
+    delete_meme_route: String,
+    edit_meme_route: String
   },
 };
 </script>

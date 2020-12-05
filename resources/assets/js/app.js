@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -29,7 +28,7 @@ Vue.component('toast', require('./components/Toast.vue'));
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('notifications-status', require('./components/NotificationsStatus.vue'));
 Vue.component('notification-alert', require('./components/NotificationAlert.vue'));
-
+Vue.component('follow-component', require('./components/FollowComponent.vue'));
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
