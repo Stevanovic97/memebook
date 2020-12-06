@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('navbar')
-    @include('partials.main-navbar')
+    @include('partials.main-navbar')    
 @endsection
 
 @section('content')
@@ -16,7 +16,7 @@
                       edit_password_route="{{route('user.editPassword')}}"
                       show_user_followers="{{route('user.followers')}}"
                       show_user_following="{{route('user.following')}}"
-        >
+                      >
         </user-profile>
     </div>
 @endsection
