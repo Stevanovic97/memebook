@@ -21,7 +21,7 @@ class NotificationRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public static function rules()
     {
         return [
             'notificationId' => 'required'

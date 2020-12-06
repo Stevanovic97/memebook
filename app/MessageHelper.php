@@ -4,12 +4,10 @@ namespace App;
 
 final class MessageHelper 
 {
-    public function __construct()
-    {
-        
-    }
-
-    private static $alertMessageConstants = [
+    private static $messageConstants = [
+        'ActionSuccess' => 'This action was successful.',
+        'ActionWarning' => 'Warning! There was some problem!',
+        'ActionDanger' => 'Fail! Please try again.',
         'BadRequest' => 'There was an error in your request. Please try again!',
         'NotFound' => 'Not found!',
         'CreateMemeSuccess' => 'You have successfully created meme.',
@@ -22,36 +20,64 @@ final class MessageHelper
         'MemeReportFail' => 'There was an error trying to report meme. Please try again!'
     ];
 
-    private static $titles = [
+    private static $messageTitle = [
         'success' => 'Success!',
-        'info' => 'Info!',
         'warning' => 'Warning!',
         'danger' => 'Error!'
     ];
 
-    private static $genericMessages = [
-        'sucess' => 'This action was successful.',
-        'warning' => 'Warning! There was some problem!',
-        'danger' => 'Fail! Please try again.'
-    ];
-
-    private static function GenerateToastMessage($messageType, $messageTitle, $message)
+    private static function CreateMessage($type, $message)
     {
         $toastMessage = [
-            'flashType' => $messageType,
-            'flashTitle' => $messageTitle,
+            'flashType' => $type,
+            'flashTitle' => self::$messageTitle[$type],
             'flashMessage' => $message
         ];
         return $toastMessage;
     }
 
-    public static function ToastMessage($status, $customMessage = null, $message = null)
+    private static function IsGenericMessage($message)
     {
-        if ($customMessage == false && $message)
-        {
-            $message = MessageHelper::$alertMessageConstants[$message];
-        }
-        return MessageHelper::GenerateToastMessage($status, MessageHelper::$titles[$status],
-                                           $message ? $message : MessageHelper::$genericMessages[$status]);
+        return array_key_exists($message, self::$messageConstants);
     }
+    
+    private static function ValidateMessage($message = null, $messageType)
+    {
+        if (!$message)
+        {
+            //generic success, warning or danger
+            $message = self::$messageConstants[$messageType];
+            return $message;
+        }
+        else if ($message && self::IsGenericMessage($message))
+        {
+            //generic custom message types
+            $message = self::$messageConstants[$message];
+            return $message;
+        }
+        //custom message
+        return $message;
+    }
+
+    public static function Success($message = null)
+    {
+        $validatedMessage = self::ValidateMessage($message, 'ActionSuccess');
+        $generatedMessage = self::CreateMessage('success', $validatedMessage);
+        return $generatedMessage;
+    }
+
+    public static function Warning($message = null)
+    {
+        $validatedMessage = self::ValidateMessage($message, 'ActionWarning');
+        $generatedMessage = self::CreateMessage('warning', $validatedMessage);
+        return $generatedMessage;
+    }
+
+    public static function Error($message = null)
+    {
+        $validatedMessage = self::ValidateMessage($message, 'ActionDanger');
+        $generatedMessage = self::CreateMessage('danger', $validatedMessage);
+        return $generatedMessage;
+    }
+
 }

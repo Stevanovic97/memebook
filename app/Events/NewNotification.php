@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\User;
 use App\Meme;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -27,7 +28,7 @@ class NewNotification implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(User $user, Meme $meme = NULL, $typeOfNotification)
+    public function __construct(User $user, Meme $meme = null, $typeOfNotification)
     {
         $this->fromUser = Auth::user();
         $this->toUser = $user;
@@ -47,18 +48,19 @@ class NewNotification implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        $notification_id = $this->fromUser->getNotification($this->toUser->id)->id;
+        $notification = $this->fromUser->getNotification($this->toUser->id);
         $fromUserInfo = array(
             'fromUserId' => $this->fromUser->id,
             'fromUserName' => $this->fromUser->name,
-            'notificationType' => $this->typeOfNotification,
-            'id' => $notification_id
+            'fromUserAvatar' => $this->fromUser->avatar,
+            'notifiable_type' => $this->typeOfNotification,
+            'created_date' => Carbon::parse($notification['created_at'])->toDateTimeString(),
+            'id' => $notification->id,
         );
-
-        if ($this->meme != NULL)
+        if ($this->meme != null)
         {
             $fromUserInfo['meme_id'] = $this->meme->id; 
         }
-        return array_merge($this->toUser->toArray(), $fromUserInfo);
+        return array_merge($this->fromUser->toArray(), $fromUserInfo);
     }
 }

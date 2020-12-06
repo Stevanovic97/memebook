@@ -81,12 +81,12 @@ export default {
   methods: {
     upvote() {
       $.ajax({
-        headers: {
-          "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        url: "/meme/vote",
-        data: { meme_id: this.meme.id, vote: 1 },
-        type: "POST",
+          headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+          },
+          url: "/meme/vote",
+          data: { meme_id: this.meme.id, vote: 1 },
+          type: "POST",
         success: function (data) {
           var upvoteButton = $("#meme_upvote-" + data.meme_id);
           var downvoteButton = $("#meme_downvote-" + data.meme_id);
@@ -105,18 +105,19 @@ export default {
           $("#votes-" + data.meme_id).html(data.sum);
         },
         error: function (xhr) {
-          if ((xhr.status = 401)) window.location.href = "/login";
+          if ((xhr.status == 401)) window.location.href = "/login";
+          else if ((xhr.status == 400)) return; //[TODO]:show toast message
         },
       });
     },
     downvote() {
       $.ajax({
-        headers: {
-          "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        url: "/meme/vote",
-        data: { meme_id: this.meme.id, vote: -1 },
-        type: "POST",
+          headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+          },
+          url: "/meme/vote",
+          data: { meme_id: this.meme.id, vote: -1 },
+          type: "POST",
         success: function (data) {
           var upvoteButton = $("#meme_upvote-" + data.meme_id);
           var downvoteButton = $("#meme_downvote-" + data.meme_id);
@@ -139,19 +140,10 @@ export default {
         },
         error: function (xhr) {
           if ((xhr.status == 401)) window.location.href = "/login";
+          else if ((xhr.status == 400)) return; //[TODO]:show toast message
         },
       });
     },
-    // deleteMeme() {
-    //   $.ajax({
-    //     headers: {
-    //       "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-    //     },
-    //     url: this.delete_meme_route,
-    //     data: { meme_id: this.meme.id },
-    //     type: "POST"
-    //   })
-    // }
   }
 };
 </script>

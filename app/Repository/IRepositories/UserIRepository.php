@@ -12,4 +12,5 @@ interface UserIRepository
     function getNotifications();
 
     function markNotificationAsRead($notificationId);
+    function markNotificationsAsRead($userId);
 }

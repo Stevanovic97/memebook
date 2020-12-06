@@ -25,12 +25,13 @@
             Echo.channel('memebook-channel.' + this.user_id)
                 .listen('NewNotification', (notification) => {
                     this.showAlert = true;
-                    if (notification.notificationType.includes("UserFollowed"))
+                    let notificationType = notification.notifiable_type;
+                    if (notificationType.includes("UserFollowed"))
                     {
                         this.title = "New follower!";
                         this.message = "User " + notification.fromUserName + " is now following you.";
                     }
-                    else if (notification.notificationType.includes("NewMeme"))
+                    else if (notificationType.includes("NewMeme"))
                     {
                         this.title = "New meme!";
                         this.message = "User you are following " + notification.fromUserName + " has posted a new meme.";

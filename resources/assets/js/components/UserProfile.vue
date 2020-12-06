@@ -22,14 +22,11 @@
                                     this.user.following }} Following</a>
                             </h4></i>
                         </div>
-
                         <follow-component :user="user"
                                           :auth_user="auth_user"
                                           :follow_route="follow_route"
-                                          :unfollow_route="unfollow_route"
-                        >
+                                          :unfollow_route="unfollow_route">
                         </follow-component>
-
                     </td>
                     <br>
                     <div v-if="this.auth_user !== null && this.user.id == this.auth_user.id">
@@ -101,22 +98,26 @@
             this.isFetching = false;
         },
         methods: {
-            async IsFollowingCheck() {
-                await $.ajax({
-                    url: "/user/follows",
-                    type: "POST",
-                    data: {user_id: this.user.id},
-                    headers: {
-                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-                    },
-                    error: function (xhr, error) {
-                        if (xhr.status == 401) window.location.href = "/login";
-                        else if (xhr.status == 404) window.history.back();
-                        else if (xhr.status == 500) console.log(xhr);
-                        else console.log(error);
-                    },
-                }).done(following => this.isFollowing = JSON.parse(following));
-            }
+          async IsFollowingCheck() {
+              await $.ajax({
+                  url: "/user/follows",
+                  type: "POST",
+                  data: {user_id: this.user.id},
+                  headers: {
+                      "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                  },
+                  error: function (xhr, error) {
+                      if (xhr.status == 401) window.location.href = "/login";
+                      else if (xhr.status == 404) window.history.back();
+                      else if (xhr.status == 500) console.log(xhr);
+                      else console.log(error);
+                  },
+              }).done(following => this.isFollowing = JSON.parse(following));
+          },
+          DisableFollow() 
+          {
+              
+          }
         },
     };
 </script>

@@ -1,3 +1,8 @@
+#notificationsMenu {
+    max-height: 230px;
+    overflow: auto;
+}
+
 .notification-count {
     line-height: 12px;
     padding: 2px 5px;
@@ -8,6 +13,7 @@
   
 .dropdown-menu-notifications {
     width: 360px;
+    display: none;
 }
 .dropdown-menu-notifications li {
     padding: 0px 0;
@@ -37,9 +43,4 @@
     width: 100%;
     background: white;
     border: 1px solid #E5E6E7;
-}
-
-#notificationsMenu {
-    max-height: 250px;
-    overflow: auto;
 }

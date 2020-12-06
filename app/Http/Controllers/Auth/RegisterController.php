@@ -50,8 +50,7 @@ class RegisterController extends Controller
     {
         $validator = $this->validator($request->all());
         if ($validator->fails()) {
-            $message = MessageHelper::ToastMessage('danger', true, $validator->messages()
-                ->first());
+            $message = MessageHelper::Error($validator->messages()->first());
             $redirectTo = back()->withInput()->with($message);
         }
         return $this->baseRegister($request);
@@ -82,7 +81,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         if (isset($data['image'])) {
-            $img_name = ImageHelper::CreateImage($data['image'], 'images/user-profile-images');
+            $img_name = '/images/user-profile-images' . ImageHelper::CreateImage($data['image'], 'images/user-profile-images');
         } else {
             $img_name = '/images/profile-image-avatar-default.png';
         }

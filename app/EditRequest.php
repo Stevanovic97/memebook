@@ -36,10 +36,10 @@ class EditRequest extends Model
     {
         $deleted = EditRequest::where('id', $editRequest_id)->delete();
         if ($deleted) {
-            return MessageHelper::ToastMessage('success');
+            return MessageHelper::Success();
         } 
         else {
-            return MessageHelper::ToastMessage('danger');
+            return MessageHelper::Error();
         }
     }
 
@@ -51,10 +51,10 @@ class EditRequest extends Model
             'meme_id' => $request->meme_id,
         ]);
         if ($created) {
-            return MessageHelper::ToastMessage('success');
+            return MessageHelper::Success();
         } 
         else {
-            return MessageHelper::ToastMessage('danger');
+            return MessageHelper::Error();
         }
     }
 }

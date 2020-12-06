@@ -102,6 +102,10 @@
     color: white;
 }
 
+#report_meme_button:hover {
+    background-color: #026a97
+}
+
 #delete_meme_button {
     background-color: #f35b3f; 
     color: white;

@@ -81,11 +81,11 @@ class Vote extends Model
         if ($meme != null)
         {
             Vote::where('meme_id', '=', $meme_id)->delete();
-            return MessageHelper::ToastMessage('success');
+            return MessageHelper::Success();
         }
         else
         {
-            return MessageHelper::ToastMessage('danger');
+            return MessageHelper::Error();
         }
     }
 }

@@ -36,15 +36,15 @@ class MemeReport extends Model
                 'user_id' => $user_id
             ]);
             if ($created) {
-                return MessageHelper::ToastMessage('success', false, 'MemeReportSuccess');
+                return MessageHelper::Success('MemeReportSuccess');
             } 
             else {
-                return MessageHelper::ToastMessage('danger', false, 'MemeReportFail');
+                return MessageHelper::Danger('MemeReportFail');
             }
         }
         else
         {
-            return MessageHelper::ToastMessage('warning', true, 'You have already reported this meme!');
+            return MessageHelper::Warning('You have already reported this meme!');
         }
     }
 
@@ -52,10 +52,10 @@ class MemeReport extends Model
     {
         $deleted = EditRequest::where('user_id', $user_id)->delete();
         if ($deleted) {
-            return MessageHelper::ToastMessage('success');
+            return MessageHelper::Success();
         } 
         else {
-            return MessageHelper::ToastMessage('danger');
+            return MessageHelper::Danger();
         }
     }
 
@@ -63,10 +63,10 @@ class MemeReport extends Model
     {
         $deleted = EditRequest::where('meme_id', $meme_id)->delete();
         if ($deleted) {
-            return MessageHelper::ToastMessage('success');
+            return MessageHelper::Success();
         } 
         else {
-            return MessageHelper::ToastMessage('danger');
+            return MessageHelper::Danger();
         }
     }
 }

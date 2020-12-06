@@ -19,11 +19,11 @@
     @endauth
     <div class="float-right">
         @auth
-            <div class="dropdown">
-                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" data-target="#dropdown-options" aria-haspopup="true" aria-expanded="false">
-                    <span class="caret"> {{ Auth::user()->name }} </span>
+            <div onclick="toggleLoggedInUserDropdown()">
+                <a class="nav-link" href="#" role="button">
+                    <span class="caret dropbtn"> {{ Auth::user()->name }} </span>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right" id="dropdown-options" aria-labelledby="navbarDropdown">
+                <div class="dropdown-menu dropdown-menu-right" id="loggedInDropdown">
                     <div>
                         <a class="dropdown-item" href="{{ route('user.show', [ 'id' => Auth::user()->id ]) }}">
                             User Profile

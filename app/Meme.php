@@ -40,7 +40,8 @@ class Meme extends Model
 
     public function getAllMemes()
     {
-        $memes = Meme::with(['votes', 'user'])->orderBy('created_at', 'desc')->paginate(5);
+        $memes = Meme::with(['votes', 'user'])->orderBy('created_at', 'desc')
+                                              ->paginate(5);
         if (!empty($memes))
         {
             $memes = $this->fillMemeData($memes);
@@ -50,7 +51,8 @@ class Meme extends Model
 
     public function getAllMemesForCategory($category_id)
     {
-        $memes = Meme::where('category_id', $category_id)->orderBy('created_at', 'desc')->paginate(5);
+        $memes = Meme::where('category_id', $category_id)->orderBy('created_at', 'desc')
+                                                         ->paginate(5);
         if (!empty($memes))
         {
             $memes = $this->fillMemeData($memes);
@@ -60,7 +62,8 @@ class Meme extends Model
 
     public function getAllMemesForUser($user_id)
     {
-        $memes = Meme::where('user_id', $user_id)->orderBy('created_at', 'desc')->paginate(5);
+        $memes = Meme::where('user_id', $user_id)->orderBy('created_at', 'desc')
+                                                 ->paginate(5);
         if (!empty($memes))
         {
             $memes = $this->fillMemeData($memes);
@@ -86,10 +89,10 @@ class Meme extends Model
             'category_id' => $request->category_id
         ]);
         if ($created) {
-            return MessageHelper::ToastMessage('success', false, 'CreateMemeSuccess');
+            return MessageHelper::Success('CreateMemeSuccess');
         } 
         else {
-            return MessageHelper::ToastMessage('danger', false, 'CreateMemeFail');
+            return MessageHelper::Error('CreateMemeFail');
         }
     }
 
@@ -103,10 +106,10 @@ class Meme extends Model
             'category_id' => $data->category_id
         ]);
         if ($created) {
-            return MessageHelper::ToastMessage('success', false, 'CreateMemeSuccess');
+            return MessageHelper::Success('CreateMemeSuccess');
         } 
         else {
-            return MessageHelper::ToastMessage('danger', false, 'CreateMemeFail');
+            return MessageHelper::Error('CreateMemeFail');
         }
     }
 
@@ -118,10 +121,10 @@ class Meme extends Model
 
         $updated = $meme->save();
         if ($updated) {
-            return MessageHelper::ToastMessage('success', false, 'UpdateMemeSuccess');
+            return MessageHelper::Success('UpdateMemeSuccess');
         } 
         else {
-            return MessageHelper::ToastMessage('danger', false, 'UpdateMemeFail');
+            return MessageHelper::Error('UpdateMemeFail');
         }
     }
 
@@ -130,10 +133,10 @@ class Meme extends Model
         $meme = Meme::findOrFail($meme_id);
         $deleted = $meme->delete();
         if ($deleted) {
-            return MessageHelper::ToastMessage('success', false, 'DeleteMemeSuccess');
+            return MessageHelper::Success('DeleteMemeSuccess');
         } 
         else {
-            return MessageHelper::ToastMessage('danger', false, 'DeleteMemeFail');
+            return MessageHelper::Error('DeleteMemeFail');
         }
     }
 
@@ -151,7 +154,7 @@ class Meme extends Model
                 });
                 $meme->numOfVotes = $meme->votes->sum('vote');
                 $meme->voted = $auth_user ? $this->memeIsVotedByUser($vote)
-                                            : array('upvoted' => 'white', 'downvoted' => 'white');
+                                          : array('upvoted' => 'white', 'downvoted' => 'white');
             };
         }
         else
@@ -163,7 +166,7 @@ class Meme extends Model
             });
             $memes->numOfVotes = $memes->votes->sum('vote');
             $memes->voted = $auth_user ? $this->memeIsVotedByUser($vote)
-                                        : array('upvoted' => 'white', 'downvoted' => 'white');
+                                       : array('upvoted' => 'white', 'downvoted' => 'white');
         }
         return $memes;
     }
@@ -171,7 +174,7 @@ class Meme extends Model
     private function checkImageSource($meme)
     {
         return strpos($meme->image, "imgflip") !== false ? $meme->image
-                                                         : URL::to('/') . '/images/memes/' .  $meme->image;
+                                                : URL::to('/') . '/images/memes/' .  $meme->image;
     }
 
     private function memeIsVotedByUser($meme_vote)

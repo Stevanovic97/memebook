@@ -38,7 +38,7 @@ class MemeController extends MemeBookBaseController
         }
         else
         {
-            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            $message = MessageHelper::Error('NotFound');
             return back()->with($message);
         }
     }
@@ -57,13 +57,13 @@ class MemeController extends MemeBookBaseController
             }
             catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
             {
-                $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+                $message = MessageHelper::Error('NotFound');
                 return back()->with($message);
             }
         }
         else
         {
-            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            $message = MessageHelper::Error('NotFound');
             return back()->with($message);
         }
     }
@@ -82,6 +82,7 @@ class MemeController extends MemeBookBaseController
         {
             \Debugbar::addThrowable($ex);
             Log::error($ex->getMessage());
+            return $this->respondWithError();
         }
     }
 
@@ -89,14 +90,13 @@ class MemeController extends MemeBookBaseController
     {
         $validator = Validator::make($request->all(), MemeRequest::rules());
         if ($validator->fails()) {
-            $message = MessageHelper::ToastMessage('danger', true, $validator->messages()
-                                                                             ->first());
+            $message = MessageHelper::Error($validator->messages()->first());
             return back()->withInput()->with($message);
         }
 
         if ($request->ajax()) {
             $message = $this->memeRepository->addApiMeme($request);
-            return response()->json(['url' => route('memes.index')]);
+            return $this->respondWithData(['url' => route('memes.index')]);
         }
 
         if ($request->hasFile('image')) {
@@ -116,7 +116,7 @@ class MemeController extends MemeBookBaseController
         }
         else
         {
-            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            $message = MessageHelper::Error('NotFound');
             return back()->with($message);
         }
     }
@@ -127,15 +127,14 @@ class MemeController extends MemeBookBaseController
         {
             $validator = Validator::make($request->all(), MemeRequest::rules());
             if ($validator->fails()) {
-                $message = MessageHelper::ToastMessage('danger', true, $validator->messages()
-                                                                                 ->first());
+                $message = MessageHelper::Error($validator->messages()->first());
                 return back()->withInput()->with($message);
             }
             $message = $this->memeRepository->updateMeme($request, $meme_id);
         }
         else
         {
-            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            $message = MessageHelper::Error('NotFound');
             return back()->with($message);
         }
     }
@@ -151,13 +150,13 @@ class MemeController extends MemeBookBaseController
             }
             catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
             {
-                $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+                $message = MessageHelper::Error('NotFound');
                 return back()->with($message);
             }
         }
         else
         {
-            $message = MessageHelper::ToastMessage('danger', false, 'NotFound');
+            $message = MessageHelper::Error('NotFound');
             return back()->with($message);
         }
     }
@@ -167,9 +166,8 @@ class MemeController extends MemeBookBaseController
         $validator = Validator::make($request->all(), VoteRequest::rules());
         if ($validator->fails())
         {
-            $message = MessageHelper::ToastMessage('danger', true, $validator->messages()
-                                                                             ->first());
-            return response()->json($message, Response::HTTP_BAD_REQUEST);
+            $message = MessageHelper::Error($validator->messages()->first());
+            return $this->respondWithError($message, 400);
         }
         if (Auth::user()->id)
         {
@@ -183,8 +181,7 @@ class MemeController extends MemeBookBaseController
         $validator = Validator::make($request->all(), ReportRequest::rules());
         if ($validator->fails())
         {
-            $message = MessageHelper::ToastMessage('danger', true, $validator->messages()
-                                                                             ->first());
+            $message = MessageHelper::Error($validator->messages()->first());
             return back()->withInput()->with($message);
         }
 
