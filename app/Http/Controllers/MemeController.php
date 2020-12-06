@@ -52,7 +52,6 @@ class MemeController extends MemeBookBaseController
                 $meme = $this->memeRepository->getMeme($meme_id);
                 $reasonsToReport = MemeBookConstants::$reasonsToReport;
 
-                // $category=$this->categoryRepositore->getCategory($meme->category_id);
                 return view('meme.single')->with(compact('meme', 'reasonsToReport'));
             }
             catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)

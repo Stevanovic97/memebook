@@ -28,8 +28,8 @@ jQuery(function($) {
 jQuery(function($) {
     $('form[name="create-meme-form"').on('submit', (e) => {
         e.preventDefault();
-        let selectedType = $("input[name='chooseMemeType']:checked").val();
-        if (selectedType == 2)
+        let selectedType = $("input[name='chooseMemeType']:checked");
+        if (selectedType.val() == 2)
         {
             let form = e.currentTarget;
             let image = $(".carouselImage:visible").children('img')[0].src;
@@ -57,18 +57,19 @@ jQuery(function($) {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                 },
                 success: function(response) {
-                    window.location = response.url;
+                    window.location = response.data.url;
                 },    
                 error: function(xhr, ajaxOptions, thrownError) {
                     console.log(xhr.status);
                     console.log(thrownError);
                     console.log(xhr.responseText);
+                    //TODO[Laza]: Handle error
                 }
             });
 
             remove_screenLoader_Global();
         }
-        else if (selectedType == 1)
+        else if (selectedType.val() == 1)
         {
             let submitButton = $(":submit");
             //show spinner in button
