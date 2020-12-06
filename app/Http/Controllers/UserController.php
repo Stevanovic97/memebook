@@ -57,6 +57,7 @@ class UserController extends MemeBookBaseController
             $message = MessageHelper::ToastMessage('danger', true, 'No User Found!');
             return back()->with($message);
         }
+
     }
 
     public function editPassword()

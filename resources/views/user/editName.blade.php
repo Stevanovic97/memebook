@@ -22,7 +22,7 @@
   border-radius: 4px;
   box-sizing: border-box;
   margin-top: 6px;
-  margin-bottom: 16px;">
+  margin-bottom: 16px;" required>
 
             <button type="submit" value="Submit" class="btn btn-success">Submit Changes</button>
 
