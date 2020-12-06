@@ -25,15 +25,11 @@ class UserController extends MemeBookBaseController
                 $memes = $this->memeRepository->getAllMemesForUser($user_id);
 
                 return view('User.show')->with(compact('user', 'memes', 'categories'));
-            }
-            catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-            {
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
                 $message = MessageHelper::Error('NotFound');
                 return back()->with($message);
             }
-        }
-        else
-        {
+        } else {
             $message = MessageHelper::Error('NotFound');
             return back()->with($message);
         }
@@ -54,10 +50,9 @@ class UserController extends MemeBookBaseController
 
             return view('user.show')->with(compact('user', 'memes'));
         } else {
-            $message = MessageHelper::ToastMessage('danger', true, 'No User Found!');
+            $message = MessageHelper::Error('No User Found!');
             return back()->with($message);
         }
-
     }
 
     public function editPassword()
@@ -77,15 +72,15 @@ class UserController extends MemeBookBaseController
                     $memes = $this->memeRepository->getAllMemesForUser($user->id);
                     return view('user.show')->with(compact('user', 'memes'));
                 } else {
-                    $message = MessageHelper::ToastMessage('danger', true, 'Passwords must match!');
+                    $message = MessageHelper::Error('Passwords must match!');
                     return back()->with($message);
                 }
             } else {
-                $message = MessageHelper::ToastMessage('danger', true, 'Please type and confirm New Password!');
+                $message = MessageHelper::Error('Please type and confirm New Password!');
                 return back()->with($message);
             }
         } else {
-            $message = MessageHelper::ToastMessage('danger', true, 'Old Password is not correct!');
+            $message = MessageHelper::Error('Old Password is not correct!');
             return back()->with($message);
         }
     }
@@ -103,9 +98,7 @@ class UserController extends MemeBookBaseController
 
                 return back()->with($message);
             }
-        }
-        else
-        {
+        } else {
             $message = MessageHelper::Error('NotFound');
             return back()->with($message);
         }
@@ -119,9 +112,7 @@ class UserController extends MemeBookBaseController
                 $message = $follower->unfollow($request->user_id);
                 return back()->with($message);
             }
-        }
-        else
-        {
+        } else {
             $message = MessageHelper::Error('NotFound');
             return back()->with($message);
         }
@@ -134,10 +125,8 @@ class UserController extends MemeBookBaseController
             $isFollowing = auth()->user()->isFollowing($user_id);
             \Debugbar($isFollowing);
             return $this->respondWithData($isFollowing);
-        }
-        else
-        {
-            return $this->respondWithError('User not found.', 404); 
+        } else {
+            return $this->respondWithError('User not found.', 404);
         }
     }
 
@@ -179,14 +168,11 @@ class UserController extends MemeBookBaseController
     public function readNotifications(Request $request)
     {
         $user = auth()->user();
-        if ($user)
-        {
+        if ($user) {
             $read = $this->userRepository->markNotificationsAsRead($user->id);
-            return $read ? $this->respondSuccess() 
-                         : $this->respondWithError();
-        }
-        else
-        {
+            return $read ? $this->respondSuccess()
+                : $this->respondWithError();
+        } else {
             return $this->respondWithError('Unauthorized', 401);
         }
     }

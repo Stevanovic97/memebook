@@ -2,11 +2,11 @@
 
 namespace App;
 
-final class MemeBookConstants 
+final class MemeBookConstants
 {
     public function __construct()
     {
-        
+
     }
 
     public static $notificationConstants = [
