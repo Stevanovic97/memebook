@@ -1,8 +1,9 @@
 <?php
 namespace App\Repository\Repositories;
 
-use App\Repository\IRepositories\EditRequestIRepository;
 use App\EditRequest;
+use App\Http\Requests\EditRequestReq;
+use App\Repository\IRepositories\EditRequestIRepository;
 
 class EditRequestRepository implements EditRequestIRepository
 {
@@ -16,12 +17,12 @@ class EditRequestRepository implements EditRequestIRepository
     public function getEditRequestsForUser($user_id)
     {
         return $this->model->getAllEditRequestsForUser($user_id);
-    }   
+    }
 
     public function getEditRequestsForMeme($meme_id)
     {
         return $this->model->getAllEditRequestsForMeme($meme_id);
-    }   
+    }
 
     public function getEditRequest($editRequest_id)
     {
@@ -30,11 +31,11 @@ class EditRequestRepository implements EditRequestIRepository
 
     public function deleteEditRequest($editRequest_id)
     {
-        $this->model->deleteEditRequest($editRequest_id);
+        return $this->model->deleteEditRequest($editRequest_id);
     }
 
     public function addEditRequest(EditRequestReq $request)
     {
-        $this->model->addEditRequest($request);
+        return $this->model->addEditRequest($request);
     }
 }

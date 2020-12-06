@@ -1,0 +1,20 @@
+body
+{
+}
+
+.profile
+{
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+#basic-info 
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.avatar-photo {
+    margin-top: 20px;
+}

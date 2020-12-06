@@ -39,5 +39,5 @@ class Category extends Model
         $category = Category::find($category_id);
         $category->name = $request->name;
         $category->save();
-    } 
+    }
 }

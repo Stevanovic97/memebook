@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Repository\Repositories;
 
 use App\Meme;
-use App\Http\Requests\MemeRequest;
+use Illuminate\Http\Request;
 use App\Repository\IRepositories\MemeIRepository;
 
 class MemeRepository implements MemeIRepository
@@ -15,8 +16,13 @@ class MemeRepository implements MemeIRepository
     }
 
     public function getAllMemes()
-    {   
+    {
         return $this->model->getAllMemes();
+    }
+
+    public function getAllMemesForCategory($category_id)
+    {
+        return $this->model->getAllMemesForCategory($category_id);
     }
 
     public function getAllMemesForUser($user_id)
@@ -31,16 +37,21 @@ class MemeRepository implements MemeIRepository
 
     public function deleteMeme($meme_id)
     {
-        $this->model->deleteMeme($meme_id);
+        return $this->model->deleteMeme($meme_id);
     }
 
-    public function addMeme(MemeRequest $request, $img_name)
+    public function addMeme(Request $request, $img_name)
     {
         return $this->model->addMeme($request, $img_name);
     }
 
-    public function updateMeme(MemeRequest $request, $meme_id)
+    public function addApiMeme($data)
     {
-        $this->model->updateMeme($request, $meme_id);
+        return $this->model->addApiMeme($data);
+    }
+
+    public function updateMeme(Request $request, $meme_id)
+    {
+        return $this->model->updateMeme($request, $meme_id);
     }
 }

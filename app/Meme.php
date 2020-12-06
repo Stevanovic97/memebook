@@ -2,72 +2,188 @@
 
 namespace App;
 
-use App\Category;
 use Auth;
-use App\Http\Requests\MemeRequest;
+use App\Category;
+use App\User;
+use App\Comment;
+use App\Vote;
+use App\MemeReport;
+use App\MessageHelper;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class Meme extends Model
 {
     protected $fillable = ['title', 'body', 'category_id', 'user_id', 'image'];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 
     public function category()
     {
         return $this->belongsTo('App\Category');
     }
 
+    public function votes()
+    {
+        return $this->hasMany('App\Vote');
+    }
+
+    public function reports()
+    {
+        return $this->hasMany('App\MemeReport');
+    }
+
     public function getAllMemes()
     {
-        return Meme::all();
+        $memes = Meme::with(['votes', 'user'])->orderBy('created_at', 'desc')
+                                              ->paginate(5);
+        if (!empty($memes))
+        {
+            $memes = $this->fillMemeData($memes);
+        }
+        return $memes;
+    }
+
+    public function getAllMemesForCategory($category_id)
+    {
+        $memes = Meme::where('category_id', $category_id)->orderBy('created_at', 'desc')
+                                                         ->paginate(5);
+        if (!empty($memes))
+        {
+            $memes = $this->fillMemeData($memes);
+        }
+        return $memes;
     }
 
     public function getAllMemesForUser($user_id)
     {
-        return Meme::where('user_id', $user_id)->get();
+        $memes = Meme::where('user_id', $user_id)->orderBy('created_at', 'desc')
+                                                 ->paginate(5);
+        if (!empty($memes))
+        {
+            $memes = $this->fillMemeData($memes);
+        }
+        return $memes;
     }
 
     public function getMeme($meme_id)
     {
-        return Meme::where('id', $meme_id)->get();
+        $meme = Meme::findOrFail($meme_id);
+        $this->fillMemeData($meme);
+
+        return $meme;
     }
 
-    public function deleteMeme($meme_id)
-    {
-        Meme::where('id', $meme_id)->delete();
-    }
-
-    public function addMeme(MemeRequest $request, $img_name)
+    public function addMeme(Request $request, $img_name)
     {
         $created = Meme::create([
-                'title' => $request->title,
-                'body' => $request->body,
-                'image' => $img_name,
-                'user_id' => Auth::user()->id,
-                'category_id' => 1
-            ]);
-        if ($created)
-        {
-            $message = [
-                'flashType' => 'success',
-                'flashMessage' => 'Meme successfully uploaded!'
-            ];
-            return $message;
+            'title' => $request->title,
+            'body' => $request->body,
+            'image' => $img_name,
+            'user_id' => Auth::user()->id,
+            'category_id' => $request->category_id
+        ]);
+        if ($created) {
+            return MessageHelper::Success('CreateMemeSuccess');
         }
-        else
-        {
-            $message = [
-                'flashType' => 'danger',
-                'flashMessage' => 'Upload failed! Please try again.'
-            ];
-            return $message;
+        else {
+            return MessageHelper::Error('CreateMemeFail');
         }
     }
 
-    public function updateMeme(MemeRequest $request, $meme_id)
+    public function addApiMeme($data)
+    {
+        $created = Meme::create([
+            'title' => $data->title,
+            'body' => $data->body,
+            'image' => $data->image,
+            'user_id' => Auth::user()->id,
+            'category_id' => $data->category_id
+        ]);
+        if ($created) {
+            return MessageHelper::Success('CreateMemeSuccess');
+        }
+        else {
+            return MessageHelper::Error('CreateMemeFail');
+        }
+    }
+
+    public function updateMeme(Request $request, $meme_id)
     {
         $meme = Meme::find($meme_id);
         $meme->title = $request->title;
         $meme->body = $request->body;
-        $meme->save();
-    } 
+
+        $updated = $meme->save();
+        if ($updated) {
+            return MessageHelper::Success('UpdateMemeSuccess');
+        }
+        else {
+            return MessageHelper::Error('UpdateMemeFail');
+        }
+    }
+
+    public function deleteMeme($meme_id)
+    {
+        $meme = Meme::findOrFail($meme_id);
+        $deleted = $meme->delete();
+        if ($deleted) {
+            return MessageHelper::Success('DeleteMemeSuccess');
+        }
+        else {
+            return MessageHelper::Error('DeleteMemeFail');
+        }
+    }
+
+    private function fillMemeData($memes)
+    {
+        $auth_user = Auth::user();
+        if ($memes instanceof LengthAwarePaginator)
+        {
+            foreach ($memes as $meme)
+            {
+                $meme->sourceImage = $this->checkImageSource($meme);
+                $meme->username = $meme->user->name;
+                $vote = $meme->votes->first(function($vote) {
+                    return Auth::user() ? $vote->user_id === Auth::user()->id : null;
+                });
+                $meme->numOfVotes = $meme->votes->sum('vote');
+                $meme->voted = $auth_user ? $this->memeIsVotedByUser($vote)
+                                          : array('upvoted' => 'white', 'downvoted' => 'white');
+            };
+        }
+        else
+        {
+            $memes->sourceImage = $this->checkImageSource($memes);
+            $memes->username = $memes->user->name;
+            $vote = $memes->votes->first(function($vote) {
+                return Auth::user() ? $vote->user_id === Auth::user()->id : null;
+            });
+            $memes->numOfVotes = $memes->votes->sum('vote');
+            $memes->voted = $auth_user ? $this->memeIsVotedByUser($vote)
+                                       : array('upvoted' => 'white', 'downvoted' => 'white');
+        }
+        return $memes;
+    }
+
+    private function checkImageSource($meme)
+    {
+        return strpos($meme->image, "imgflip") !== false ? $meme->image
+                                                : URL::to('/') . '/images/memes/' .  $meme->image;
+    }
+
+    private function memeIsVotedByUser($meme_vote)
+    {
+        if ($meme_vote === null)
+        {
+            return array('upvoted' => 'white', 'downvoted' => 'white');
+        }
+        return $meme_vote->vote === 1 ? array('upvoted' => '#99CCFF', 'downvoted' => 'white')
+                                      : array('upvoted' => 'white', 'downvoted' => '#99CCFF');
+    }
 }

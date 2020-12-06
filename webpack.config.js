@@ -1,12 +1,24 @@
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+// module.exports = {
+//   plugins: [new MiniCssExtractPlugin()],
+//   module: {
+//     rules: [
+//       {
+//         test: /\.css$/i,
+//         use: [MiniCssExtractPlugin.loader, 'css-loader'],
+//       },
+//     ],
+//   },
+// };
+import css from 'file.css';
 
 module.exports = {
-  plugins: [new MiniCssExtractPlugin()],
   module: {
     rules: [
       {
         test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
