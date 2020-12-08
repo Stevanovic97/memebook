@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\MessageHelper;
 use App\MemeBookConstants;
 use App\Events\NewNotification;
 use App\Http\Requests\NotificationRequest;
 use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Response;
+
 
 class UserController extends MemeBookBaseController
 {
@@ -48,7 +46,7 @@ class UserController extends MemeBookBaseController
             $user->save();
             $memes = $this->memeRepository->getAllMemesForUser($user->id);
 
-            return view('user.show')->with(compact('user', 'memes'));
+            return redirect(route('user.show', $user->id))->with(compact('memes', 'user'));
         } else {
             $message = MessageHelper::Error('No User Found!');
             return back()->with($message);
@@ -70,7 +68,7 @@ class UserController extends MemeBookBaseController
                     $user->save();
 
                     $memes = $this->memeRepository->getAllMemesForUser($user->id);
-                    return view('user.show')->with(compact('user', 'memes'));
+                    return redirect(route('user.show', $user->id))->with(compact('memes', 'user'));
                 } else {
                     $message = MessageHelper::Error('Passwords must match!');
                     return back()->with($message);
@@ -81,6 +79,37 @@ class UserController extends MemeBookBaseController
             }
         } else {
             $message = MessageHelper::Error('Old Password is not correct!');
+            return back()->with($message);
+        }
+    }
+
+    public function delete()
+    {
+        return view('user.deleteAccount');
+    }
+
+    public function deleteAccount(Request $request)
+    {
+        $user = $this->userRepository->getUser(auth()->user()->id);
+        if (isset($user)) {
+            if (Hash::check($request->password, $user->password)) {
+                if ($request->password == $request->passwordConfirm) {
+                    $this->userRepository->deleteUser($user->id);
+                    $message = MessageHelper::Success('Your account was deleted successfully!');
+
+                    $memes = $this->memeRepository->getAllMemes();
+                    $categories = $this->categoryRepository->getCategories();
+                    return redirect(route('memes.index'))->with($message)->with(compact('memes', 'categories'));
+                } else {
+                    $message = MessageHelper::Error('Passwords must match, please try again!');
+                    return back()->with($message);
+                }
+            } else {
+                $message = MessageHelper::Error('Invalid password, please try again!');
+                return back()->with($message);
+            }
+        } else {
+            $message = MessageHelper::Error('No user found!');
             return back()->with($message);
         }
     }
@@ -130,17 +159,17 @@ class UserController extends MemeBookBaseController
         }
     }
 
-    public function showFollowers()
+    public function showFollowers($user_id)
     {
-        $user = $this->userRepository->getUser(auth()->user()->id);
+        $user = $this->userRepository->getUser($user_id);
         $followers = $user->followers()->get();
 
         return view('user.followers')->with(compact('followers'));
     }
 
-    public function showFollowing()
+    public function showFollowing($user_id)
     {
-        $user = $this->userRepository->getUser(auth()->user()->id);
+        $user = $this->userRepository->getUser($user_id);
         $follows = $user->follows()->get();
         return view('user.follows')->with(compact('follows'));
     }

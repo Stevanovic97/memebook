@@ -1,7 +1,7 @@
 <div>
     <hr>
     <div class="row meme-container">
-        <meme-component :meme="{{ $meme }}" 
+        <meme-component :meme="{{ $meme }}"
                         memeimage="{{ $meme->sourceImage }}"
                         :user='@json(auth()->user())'
                         single_meme_route="{{ route('meme.single', $meme->id) }}"
@@ -12,12 +12,12 @@
             <div class="row scrollbar-ripe-malinka">
                 <div id="comments">
                     @include('laravelLikeComment::comment', ['comment_item_id' => $meme->id])
-                </div>  
+                </div>
             </div>
             @if(!auth()->guest())
                 <div class="row report-meme">
                     <button type="button"
-                            id="report_meme_button" 
+                            id="report_meme_button"
                             class="btn"
                             onclick="ReportMeme({{ $meme->id }});">
                         Report Meme
@@ -25,9 +25,9 @@
                 </div>
             @else
                 <div class="row report-meme">
-                    <button type="button" 
-                            id="report_meme_button" 
-                            class="btn" 
+                    <button type="button"
+                            id="report_meme_button"
+                            class="btn"
                             onclick="ReportMeme({{ $meme->id }});"
                             disabled>
                         Report Meme

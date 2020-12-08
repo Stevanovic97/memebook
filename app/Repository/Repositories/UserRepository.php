@@ -24,6 +24,11 @@ class UserRepository implements UserIRepository{
         return $this->model->getUser($user_id);
     }
 
+        function deleteUser($user_id)
+    {
+        return $this->model->deleteUser($user_id);
+    }
+
     public function getNotifications()
     {
         return $this->model->getNotifications();

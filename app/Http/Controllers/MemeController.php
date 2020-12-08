@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Session;
-use App\Meme;
 use App\ImageHelper;
 use App\MessageHelper;
 use App\MemeBookConstants;

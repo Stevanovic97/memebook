@@ -6,12 +6,17 @@
                     <div id="basic-info row">
                         <h1>
                             Username: <i>{{ this.user.name }}</i>
+                            <!--                            <div class="container1">-->
                             <avatar class="avatar-photo"
                                     :username="this.user.name"
                                     :src="this.user.avatar"
                                     :size=75
                                     :inline="true">
                             </avatar>
+                            <!--                                <div class="middle">-->
+                            <!--                                    <span>nesto</span>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
                         </h1>
                     </div>
                     <td>
@@ -33,6 +38,9 @@
                         <a :href="this.edit_username_route">Edit Username</a>
                         <br>
                         <a :href="this.edit_password_route">Edit Password</a>
+                        <br>
+                        <br>
+                        <a :href="this.delete_account_route"><i><u>Delete you account?</u></i></a>
                     </div>
                     <div>
                         <div v-if="this.memes.data.length > 0">
@@ -79,7 +87,8 @@
             edit_username_route: String,
             edit_password_route: String,
             show_user_followers: String,
-            show_user_following: String
+            show_user_following: String,
+            delete_account_route: String
         },
         computed: {
             memesCount: function () {
@@ -88,36 +97,35 @@
         },
         data() {
             return {
-                isFollowing: false,
+                // isFollowing: false,
                 isFetching: true,
                 csrfToken: $('meta[name="csrf-token"]').attr("content"),
             }
         },
         mounted() {
-            this.IsFollowingCheck();
+            // this.IsFollowingCheck();
             this.isFetching = false;
         },
         methods: {
-          async IsFollowingCheck() {
-              await $.ajax({
-                  url: "/user/follows",
-                  type: "POST",
-                  data: {user_id: this.user.id},
-                  headers: {
-                      "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-                  },
-                  error: function (xhr, error) {
-                      if (xhr.status == 401) window.location.href = "/login";
-                      else if (xhr.status == 404) window.history.back();
-                      else if (xhr.status == 500) console.log(xhr);
-                      else console.log(error);
-                  },
-              }).done(following => this.isFollowing = JSON.parse(following));
-          },
-          DisableFollow() 
-          {
-              
-          }
+            // async IsFollowingCheck() {
+            //     await $.ajax({
+            //         url: "/user/follows",
+            //         type: "POST",
+            //         data: {user_id: this.user.id},
+            //         headers: {
+            //             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            //         },
+            //         error: function (xhr, error) {
+            //             if (xhr.status == 401) window.location.href = "/login";
+            //             else if (xhr.status == 404) window.history.back();
+            //             else if (xhr.status == 500) console.log(xhr);
+            //             else console.log(error);
+            //         },
+            //     }).done(following => this.isFollowing = JSON.parse(following.data));
+            // },
+            DisableFollow() {
+
+            }
         },
     };
 </script>

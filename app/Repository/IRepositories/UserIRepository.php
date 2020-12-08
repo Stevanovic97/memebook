@@ -9,8 +9,11 @@ interface UserIRepository
 
     function getUser($user_id);
 
+    function deleteUser($user_id);
+
     function getNotifications();
 
     function markNotificationAsRead($notificationId);
+
     function markNotificationsAsRead($userId);
 }

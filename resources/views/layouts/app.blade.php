@@ -10,6 +10,7 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- SIDEBAR library imports -->
     <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/avatar.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/sidebar.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/toastr.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/notifications.css') }}">
@@ -51,23 +52,23 @@
     @endif
 </head>
 <body>
-    <div id="app">
-        <!-- Main Navbar -->
-            @yield('navbar')
-        <!-- Sidebar -->
-            @yield('sidebar')
-        <!-- Content -->
-            @yield('content')
-        <!-- End content -->
+<div id="app">
+    <!-- Main Navbar -->
+@yield('navbar')
+<!-- Sidebar -->
+@yield('sidebar')
+<!-- Content -->
+@yield('content')
+<!-- End content -->
 
-        @if (session('flashType'))
-            <toast type="{{ session('flashType') }}"
-                    title="{{ session('flashTitle') }}"
-                    message="{{ session('flashMessage') }}"
-            >
-            </toast>
-        @endif
-    </div>
+    @if (session('flashType'))
+        <toast type="{{ session('flashType') }}"
+               title="{{ session('flashTitle') }}"
+               message="{{ session('flashMessage') }}"
+        >
+        </toast>
+    @endif
+</div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>

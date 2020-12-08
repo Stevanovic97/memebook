@@ -62,7 +62,7 @@
                         else if (xhr.status == 500) console.log(xhr);
                         else console.log(error);
                     },
-                }).done(following => this.isFollowing = JSON.parse(following));
+                }).done(following => this.isFollowing = JSON.parse(following.data));
             }
         },
     }

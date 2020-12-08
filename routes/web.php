@@ -32,6 +32,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/user/edit/{id}', 'UserController@edit')->name('user.edit');
     Route::get('/user/editName', 'UserController@editName')->name('user.editName');
     Route::post('/user/updateName', 'UserController@updateName')->name('user.updateName');
+    //delete user routes
+    Route::get('/user/delete', 'UserController@delete')->name('user.delete');
+    Route::post('/user/deleteAccount', 'UserController@deleteAccount')->name('user.deleteAccount');
+
     //password edit
     Route::get('/user/editPassword', 'UserController@editPassword')->name('user.editPassword');
     Route::post('user/updatePassword', 'UserController@updatePassword')->name('user.updatePassword');
@@ -43,11 +47,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/user/notification/read', 'UserController@readNotification')->name('read.notification');
     Route::get('/user/notifications/read', 'UserController@readNotifications')->name('read.notifications');
 
-    Route::get('/user/followers', 'UserController@showFollowers')->name('user.followers');
-    Route::get('/user/following', 'UserController@showFollowing')->name('user.following');
+    Route::get('/user/followers/{user_id}', 'UserController@showFollowers')->name('user.followers');
+    Route::get('/user/following/{user_id}', 'UserController@showFollowing')->name('user.following');
 });
 
-Route::fallback(function() {
+Route::fallback(function () {
     return view("errors.404");
 });
 

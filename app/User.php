@@ -51,6 +51,13 @@ class User extends Authenticatable
         return $user;
     }
 
+    public function deleteUser($user_id)
+    {
+        $user = User::FindOrFail($user_id);
+        $user->memes()->delete();
+        $user->delete();
+    }
+
     public function followers()
     {
         return $this->belongsToMany(self::class, 'followers', 'follows_id', 'user_id')
@@ -68,7 +75,7 @@ class User extends Authenticatable
         $this->follows()->attach($userId);
         $followedUser = User::where('id', $userId)->first();
         $followMessage = MessageHelper::Success('Your are now following ' . $followedUser->name);
-       
+
         return compact('followMessage');
     }
 
@@ -89,21 +96,20 @@ class User extends Authenticatable
     public function getNotifications()
     {
         $user = auth()->user();
-        if ($user)
-        {
+        if ($user) {
             $notifications = $user->notifications()->get();
             $notificationsData = json_decode($notifications);
             $notificationsJSON = array();
 
             foreach ($notificationsData as $notification) {
                 $tuple = array('read_at' => $notification->read_at,
-                               'id' => $notification->id,
-                               'created_date' => $notification->created_at,
-                               'notifiable_type' => $notification->type,
-                               'fromUserName' => $notification->data->follower_name,
-                               'fromUserAvatar' => $notification->data->follower_avatar,
-                               'follower_id' => $notification->data->follower_id
-                              );
+                    'id' => $notification->id,
+                    'created_date' => $notification->created_at,
+                    'notifiable_type' => $notification->type,
+                    'fromUserName' => $notification->data->follower_name,
+                    'fromUserAvatar' => $notification->data->follower_avatar,
+                    'follower_id' => $notification->data->follower_id
+                );
                 $notificationsJSON[] = $tuple;
             }
             return $notificationsJSON;
@@ -131,8 +137,7 @@ class User extends Authenticatable
 
     public function markNotificationsAsRead($userId)
     {
-        foreach (auth()->user()->unreadNotifications as $notification)
-        {
+        foreach (auth()->user()->unreadNotifications as $notification) {
             if (!$notification->read_at)
                 $notification->markAsRead();
         }
