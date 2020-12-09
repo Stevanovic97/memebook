@@ -30,12 +30,7 @@
         </div>
       </div>
       <div class="user-options row-fluid">
-        <div class="profile-view">
-          <b><h5>User profile:</h5> </b>
-          <a :href="this.user_route">
-            <span><h4>{{ this.username }}</h4></span>
-          </a>
-        </div>
+
         <div class="meme-options">
           <a
             v-if="this.user !== null"

@@ -8,7 +8,8 @@
                             single_meme_route="{{ route('meme.single', $meme->id) }}"
                             user_route="{{ route('user.show', $meme->user_id) }}"
                             delete_meme_route="{{ route('meme.delete') }}"
-                            edit_meme_route="{{route('meme.edit',$meme->id)}}">
+                            edit_meme_route="{{route('meme.edit',$meme->id)}}"
+                            show_memes_category_route="{{route('filter.category', $meme->category_id)}}">
             </meme-component>
             <div class="row right-side">
                 <div class="row scrollbar-ripe-malinka">

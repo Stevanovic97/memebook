@@ -40,7 +40,7 @@ class Meme extends Model
 
     public function getAllMemes()
     {
-        $memes = Meme::with(['votes', 'user'])->orderBy('created_at', 'desc')
+        $memes = Meme::with(['votes', 'user', 'category'])->orderBy('created_at', 'desc')
             ->paginate(5);
         if (!empty($memes)) {
             $memes = $this->fillMemeData($memes);
@@ -48,20 +48,15 @@ class Meme extends Model
         return $memes;
     }
 
-    public function getMemeWithCat($meme_id)
-    {
-        $meme = Meme::FindOrFail($meme_id);
-        $meme->category = $meme->category()->get();
-        return $meme;
-    }
 
     public function getAllMemesForCategory($category_id)
     {
-        $memes = Meme::where('category_id', $category_id)->orderBy('created_at', 'desc')
+        $memes = Meme::where('category_id', $category_id)->with(['votes', 'user', 'category'])->orderBy('created_at', 'desc')
             ->paginate(5);
         if (!empty($memes)) {
             $memes = $this->fillMemeData($memes);
         }
+
         return $memes;
     }
 

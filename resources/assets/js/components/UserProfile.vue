@@ -13,10 +13,6 @@
                                     :size=75
                                     :inline="true">
                             </avatar>
-                            <!--                                <div class="middle">-->
-                            <!--                                    <span>nesto</span>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
                         </h1>
                     </div>
                     <td>

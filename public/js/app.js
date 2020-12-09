@@ -66013,11 +66013,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -66182,14 +66177,6 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "user-options row-fluid" }, [
-        _c("div", { staticClass: "profile-view" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("a", { attrs: { href: this.user_route } }, [
-            _c("span", [_c("h4", [_vm._v(_vm._s(this.username))])])
-          ])
-        ]),
-        _vm._v(" "),
         _c("div", { staticClass: "meme-options" }, [
           this.user !== null
             ? _c(
@@ -66244,14 +66231,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("b", [_c("h5", [_vm._v("User profile:")])])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -66302,6 +66282,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -66314,7 +66302,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         single_meme_route: String,
         user_route: String,
         delete_meme_route: String,
-        edit_meme_route: String
+        edit_meme_route: String,
+        show_memes_category_route: String
     }
 });
 
@@ -66327,6 +66316,12 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "profile-view" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("a", { attrs: { href: this.user_route } })
+    ]),
+    _vm._v(" "),
     _c(
       "article",
       { staticClass: "article-style" },
@@ -66355,6 +66350,20 @@ var render = function() {
           _c("h4", [_vm._v(_vm._s(this.meme.body))])
         ]),
         _vm._v(" "),
+        _c("div", [
+          _c("form", [
+            _c("h4", [
+              _vm._v("Category: "),
+              _c("a", { attrs: { href: this.show_memes_category_route } }, [
+                _vm._v(" " + _vm._s(this.meme.category.name) + " ")
+              ]),
+              _c("button", { staticClass: "btn btn-primary" }, [
+                _vm._v("Subscribe")
+              ])
+            ])
+          ])
+        ]),
+        _vm._v(" "),
         _c("meme-options", {
           attrs: {
             meme: this.meme,
@@ -66372,7 +66381,14 @@ var render = function() {
     _c("br")
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("b", [_c("h5", [_vm._v("User profile:")])])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -66441,10 +66457,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_avatar___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_avatar__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__FollowComponent__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__FollowComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__FollowComponent__);
-//
-//
-//
-//
 //
 //
 //

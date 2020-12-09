@@ -30,10 +30,10 @@ class MemeController extends MemeBookBaseController
         if (isset($category_id))
         {
             $memes = $this->memeRepository->getAllMemesForCategory($category_id);
-            $categories = $this->categoryRepository->getCategories();
             $reasonsToReport = MemeBookConstants::$reasonsToReport;
+            $category=$this->categoryRepository->getCategory($category_id);
 
-            return view('meme.show')->with(compact('memes', 'categories', 'reasonsToReport'));
+            return view('meme.show')->with(compact('memes', 'category', 'reasonsToReport'));
         }
         else
         {
@@ -158,6 +158,17 @@ class MemeController extends MemeBookBaseController
             return back()->with($message);
         }
     }
+
+    // public function showInCategory($category_id)
+    // {
+    //     $memes=$this->memeRepository->getAllMemesForCategory($category_id);
+    //     dd($memes);
+    //     $reasonsToReport = MemeBookConstants::$reasonsToReport;
+    //     $categories = $this->categoryRepository->getCategories();
+
+    //     return view('index')->with(compact('memes', 'reasonsToReport', 'categories'));
+
+    // }
 
     public function vote(Request $request)
     {
